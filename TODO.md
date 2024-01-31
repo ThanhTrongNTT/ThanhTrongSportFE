@@ -1,0 +1,65 @@
+# Use Cases
+## Tất cả chức năng
+- [x] Đăng ký tài khoản  (done)
+- [x] Đăng nhập (done)
+- [x] Đăng xuất (done)
+- [ ] Quên mật khẩu
+- [x] Đổi mật khẩu (done)
+- [x] Xem tất cả bài viết (done)
+- [x] Xem tất cả bài viết của người dùng (done)
+- [x] Khởi tạo bài viết (done)
+- [x] Chỉnh sửa bài viết (done)
+- [x] Xóa bài viết (done)
+- [x] Xem thông tin chi tiết của một bài viết
+- [x] Thích một bài viết
+- [x] Hủy thích một bài viết
+- [x] Bình luận vào một bài viết
+- [x] Lấy tất cả bình luận từ một bài viết
+- [x] Thích một bình luận
+- [x] Hủy thích một bình luận
+- [x] Trả lời một bình luận
+- [x] Chỉnh sửa một bình luận
+- [x] Xóa một bình luận
+- [x] Tìm kiếm người dùng
+- [x] Xem tất cả những gợi ý kết bạn
+- [x] Xem tất cả các lời mời kết bạn đã nhận
+- [x] Xem tất cả các lời mời kết bạn đã gửi
+- [x] Xem danh sách tất cả bạn bè
+- [x] Gửi lời mời kết bạn
+- [x] Hủy gửi lời mời kết bạn
+- [x] Chấp nhận lời mời kết bạn
+- [x] Từ chối lời mời kết bạn
+- [x] Hủy kết bạn
+- [x] Chặn người dùng
+- [x] Hủy chặn người dùng
+- [x] Xem thông tin chi tiết của một người đùng
+- [x] Xem các hình ảnh đã đăng của một người dùng
+- [x] Chỉnh sửa ảnh đại diện
+- [x] Xóa ảnh đại diện
+- [x] Chỉnh sửa ảnh bìa
+- [x] Xóa ảnh bìa
+- [ ] Chỉnh sửa tiểu sử
+- [ ] Chỉnh sửa thông tin chi tiết
+- [ ] Hiển thị thông bào cho người dùng
+- [ ] Xem tất cả thông báo về bài viết
+- [ ] Xem tất cả thông báo về các yêu cầu kết bạn
+- [ ] Gửi tin nhắn với một người dùng khác
+- [ ] Trả lời tin nhắn của người dùng khác
+- [ ] Thu hồi tin nhắn với một người dùng khác
+- [ ] Xóa tin nhắn
+- [ ] Tạo nhóm và gửi tin nhắn trong nhóm
+- [ ] Người dùng rời một nhóm
+- [ ] Nhận thông báo về tin nhắn
+- [ ] Nhận tin nhắn từ một người dùng
+- [ ] Gửi file trong chat room
+- [ ] Gọi thoại với một người dùng
+- [ ] Gọi video với một người dùng
+
+## Chức năng thêm
+- [x] Tìm kiếm bài viết (done)
+- [x] Lấy tất cả bài viết (done)
+- [x] Lấy danh sách những người bạn đã chặn
+- [ ] Lấy tất cả ảnh đại diện
+- [ ] Lấy tất cả ảnh bìa
+- [ ] Lấy một ảnh đại diện
+- [ ] Lấy một ảnh bìa
