@@ -1,4 +1,4 @@
-const HomePage = () => {
+const Footer = () => {
   return (
     <footer className="bg-gray-800 text-white py-8 px-2 font-[sans-serif]">
       <div className="flex flex-col items-center">
@@ -58,20 +58,10 @@ const HomePage = () => {
             </a>
           </li>
         </ul>
-        <p className="text-xs mt-8">
-          &copy; 2023
-          <a
-            href="https://readymadeui.com/"
-            target="_blank"
-            className="hover:underline mx-2"
-          >
-            ReadymadeUI
-          </a>
-          All Rights Reserved.
-        </p>
+        <p className="text-xs mt-8">&copy; 2023 All Rights Reserved.</p>
       </div>
     </footer>
   );
 };
 
-export default HomePage;
+export default Footer;
