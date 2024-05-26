@@ -1,14 +1,15 @@
 import "./App.css";
-import LoginScreen from "./screens/LoginScreen.tsx";
-import SignUpPage from "./screens/SignUpPage.tsx";
-import ProductPage from "./screens/ProductPage.tsx";
-import ProductView from "./screens/ProductView.tsx";
-import ShopCart from "./screens/ShopCart.tsx";
-import HomePage from "./screens/HomePage.tsx";
-import ProfilePage from "./screens/ProfilePage.tsx";
+import DeclareRouter from "./router/index.tsx";
+import { BrowserRouter as Router } from "react-router-dom";
+
 const App = () => {
-  // eslint-disable-next-line react/react-in-jsx-scope
-  return <ProductPage />;
+    // eslint-disable-next-line react/react-in-jsx-scope
+    // return <ProductView />;
+    return (
+        <Router>
+            <DeclareRouter />
+        </Router>
+    );
 };
 
 export default App;
