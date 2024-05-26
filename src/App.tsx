@@ -8,7 +8,7 @@ import HomePage from "./screens/HomePage.tsx";
 import ProfilePage from "./screens/ProfilePage.tsx";
 const App = () => {
   // eslint-disable-next-line react/react-in-jsx-scope
-  return <ProfilePage />;
+  return <ProductPage />;
 };
 
 export default App;

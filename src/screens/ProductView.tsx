@@ -1,4 +1,4 @@
-const LoginScreen = () => {
+const ProductView = () => {
   return (
     <div className="font-[sans-serif]">
       <div className="p-6 lg:max-w-7xl max-w-2xl max-lg:mx-auto">
@@ -263,4 +263,4 @@ const LoginScreen = () => {
   );
 };
 
-export default LoginScreen;
+export default ProductView;
