@@ -5,13 +5,13 @@ const ProductPage = () => {
     return (
         <div className="font-[sans-serif]">
             <div className="p-4 mx-auto lg:max-w-6xl md:max-w-4xl sm:max-w-full">
-                <h2 className="text-4xl font-extrabold text-gray-800 mb-12">
+                <h2 className="text-4xl font-extrabold text-gray-800">
                     Wearing
                 </h2>
-                <div className="grid place-items-center max-h-fit">
+                <div className="flex place-content-center my-6">
                     <img
                         src="https://media.glamour.com/photos/65cce0375ea0c25e5b06764f/master/w_2560%2Cc_limit/spring%25202024%2520fashion%2520trends.jpg"
-                        className="size-9/12"
+                        className="size-6/12"
                     ></img>
                 </div>
                 <div className="p-4 mx-auto lg:max-w-6xl md:max-w-4xl sm:max-w-full grid grid-cols-4">
