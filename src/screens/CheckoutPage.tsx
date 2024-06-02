@@ -1,182 +1,354 @@
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import LocationApi from "../apis/localtion.api";
+import BreadCrumb from "../component/breadcrumb/BreadCrumb";
+import OrderCard from "../component/card/OrderCard";
+import Dropdown from "../component/dropdown/Dropdown";
+import Field from "../component/field/Field";
+import Label from "../component/label/Label";
+
+type Ward = {
+    Id: string;
+    Name: string;
+};
+type District = {
+    Id: string;
+    Name: string;
+    Wards: Ward[];
+};
+type Location = {
+    Id: string;
+    Name: string;
+    Districts: District[];
+};
+
 const CheckoutPage = () => {
+    const [totalPrice, setTotalPrice] = useState(0);
+
+    const [productPrices, setProductPrices] = useState<number[]>([
+        80000, 80000, 80000, 80000,
+    ]);
+    const handleTotalPrice = (price: number, index: number) => {
+        setProductPrices((prevPrices) => {
+            const newPrices = [...prevPrices];
+            newPrices[index] = price;
+            return newPrices;
+        });
+    };
+    useEffect(() => {
+        const sum = productPrices.reduce((acc, curr) => acc + curr, 0);
+        setTotalPrice(sum);
+    }, [productPrices]);
+
+    const {
+        handleSubmit,
+        control,
+        setValue,
+        reset,
+        formState: { isSubmitSuccessful },
+    } = useForm();
+
+    // Get Location
+    const [cities, setCities] = useState<string[]>([]);
+    const [selectedCity, setSelectedCity] = useState<string>("");
+    const [districts, setDistricts] = useState<string[]>([]);
+    const [selectedDistrict, setSelectedDistrict] = useState<string | null>("");
+    const [wards, setWards] = useState<string[]>([]);
+    const [locationList, setLocationList] = useState<Location[]>([]);
+
+    // Hàm để lấy tất cả các giá trị Name từ danh sách các Location
+    const getNamesFromLocations = (locations: Location[]): string[] => {
+        let names: string[] = [];
+
+        locations.forEach((location) => {
+            // Lấy Name của Location
+            names.push(location.Name);
+        });
+
+        return names;
+    };
+
+    const getNamesFromCities = (locations: District[]): string[] => {
+        let names: string[] = [];
+
+        locations.forEach((location) => {
+            // Lấy Name của Location
+            names.push(location.Name);
+        });
+
+        return names;
+    };
+
+    const getNamesFromDistrict = (locations: Ward[]): string[] => {
+        let names: string[] = [];
+
+        locations.forEach((location) => {
+            // Lấy Name của Location
+            names.push(location.Name);
+        });
+
+        return names;
+    };
+
+    const handleCityChange = (event: any) => {
+        setSelectedCity(event.target.value);
+    };
+
+    const handleDistrictChange = (event: any) => {
+        setSelectedDistrict(event.target.value);
+    };
+
+    useEffect(() => {
+        if (selectedCity) {
+            const city = locationList.find(
+                (city) => city.Name === selectedCity,
+            );
+            if (city) {
+                setDistricts(getNamesFromCities(city.Districts));
+                setSelectedDistrict(null); // Reset selected district when city changes
+                setWards([]);
+            }
+        }
+    }, [selectedCity, cities]);
+
+    useEffect(() => {
+        const city = locationList.find((city) => city.Name === selectedCity);
+        if (selectedDistrict) {
+            const district = city?.Districts.find(
+                (district) => district.Name === selectedDistrict,
+            );
+            if (district) {
+                setWards(getNamesFromDistrict(district.Wards));
+            }
+        }
+    }, [selectedDistrict, districts]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await LocationApi.getLocations();
+                setLocationList(res.data);
+                setCities(getNamesFromLocations(res.data));
+            } catch (error) {
+                console.error("Error fetching locations:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
     return (
-        <div className="grid grid-cols-2">
-            <div className="flex">
-                <img src="https://www.cannabisbusinesstimes.com/fileuploads/image/2021/08/05/column.jpg"></img>
-            </div>
-            <form className="form-input">
-                <div className="border-b border-gray-900/10 px-12 py-2 max-h-full">
-                    <h2 className="text-base font-semibold leading-7 text-gray-900">
-                        Personal Information
-                    </h2>
-                    <p className="mt-1 text-sm leading-6 text-gray-600">
-                        Use a permanent address where you can receive mail.
-                    </p>
-
-                    <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        <div className="sm:col-span-3">
-                            <label
-                                htmlFor="first-name"
-                                className="block text-sm font-medium leading-6 text-gray-900"
-                            >
-                                First name
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    type="text"
-                                    name="first-name"
-                                    id="first-name"
-                                    autoComplete="given-name"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
+        <div className="p-10 w-3/4 text-center mx-auto">
+            <h2 className="text-5xl font-bold text-center">H&T Store</h2>
+            <BreadCrumb />
+            <div className="flex justify-center flex-col laptop:flex-row ">
+                <div className="laptop:w-2/3 text-center w-full">
+                    <span className="font-semibold p-5 text-xl">
+                        Thông tin giao hàng
+                    </span>
+                    <div className="flex justify-center items-center px-5">
+                        <form className="form-input border-none flex flex-col gap-4 w-full">
+                            <div className="grid grid-cols-2 gap-10">
+                                <div className="text-left">
+                                    <Label htmlFor="" className="px-2 text-lg">
+                                        First Name
+                                    </Label>
+                                    <Field
+                                        control={control}
+                                        name="firstName"
+                                        id="first-name"
+                                        placeholder="Enter First Name..."
+                                    >
+                                        First Name
+                                    </Field>
+                                </div>
+                                <div className="text-left">
+                                    <Label htmlFor="" className="px-2 text-lg">
+                                        Last Name
+                                    </Label>
+                                    <Field
+                                        control={control}
+                                        name="lastName"
+                                        id="last-name"
+                                        placeholder="Enter Last Name..."
+                                    >
+                                        Last Name
+                                    </Field>
+                                </div>
                             </div>
-                        </div>
-
-                        <div className="sm:col-span-3">
-                            <label
-                                htmlFor="last-name"
-                                className="block text-sm font-medium leading-6 text-gray-900"
-                            >
-                                Last name
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    type="text"
-                                    name="last-name"
-                                    id="last-name"
-                                    autoComplete="family-name"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
+                            <div className="grid grid-cols-2 gap-10">
+                                <div className="text-left">
+                                    <Label htmlFor="" className="px-2 text-lg">
+                                        Email
+                                    </Label>
+                                    <Field
+                                        control={control}
+                                        name="email"
+                                        id="email"
+                                        placeholder="Enter email..."
+                                    >
+                                        Email
+                                    </Field>
+                                </div>
+                                <div className="text-left">
+                                    <Label htmlFor="" className="px-2 text-lg">
+                                        Phone Number
+                                    </Label>
+                                    <Field
+                                        control={control}
+                                        name="phoneNumber"
+                                        id="phone-number"
+                                        placeholder="Enter Phone number..."
+                                    >
+                                        Số điện thoại
+                                    </Field>
+                                </div>
                             </div>
-                        </div>
-
-                        <div className="sm:col-span-4">
-                            <label
-                                htmlFor="email"
-                                className="block text-sm font-medium leading-6 text-gray-900"
-                            >
-                                Email address
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="email"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="sm:col-span-3">
-                            <label
-                                htmlFor="country"
-                                className="block text-sm font-medium leading-6 text-gray-900"
-                            >
-                                Country
-                            </label>
-                            <div className="mt-2">
-                                <select
-                                    id="country"
-                                    name="country"
-                                    autoComplete="country-name"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                            <div className="text-left">
+                                <Label htmlFor="" className="px-2 text-lg">
+                                    Address
+                                </Label>
+                                <Field
+                                    control={control}
+                                    name="address"
+                                    id="address"
+                                    placeholder="Enter Address..."
                                 >
-                                    <option>United States</option>
-                                    <option>Canada</option>
-                                    <option>Mexico</option>
-                                </select>
+                                    Address
+                                </Field>
                             </div>
-                        </div>
-
-                        <div className="col-span-full">
-                            <label
-                                htmlFor="street-address"
-                                className="block text-sm font-medium leading-6 text-gray-900"
-                            >
-                                Street address
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    type="text"
-                                    name="street-address"
-                                    id="street-address"
-                                    autoComplete="street-address"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
+                            <div className="grid grid-cols-3 gap-10">
+                                <div className="flex flex-col text-left">
+                                    <Label htmlFor="" className="px-2 text-lg">
+                                        City
+                                    </Label>
+                                    <Dropdown
+                                        className=""
+                                        control={control}
+                                        setValue={setValue}
+                                        dropdownLabel="Select location"
+                                        name="beginningLocation"
+                                        list={cities}
+                                        onChange={handleCityChange}
+                                    />
+                                </div>
+                                <div className="flex flex-col text-left">
+                                    <Label htmlFor="" className="px-2 text-lg">
+                                        District
+                                    </Label>
+                                    <Dropdown
+                                        onChange={handleDistrictChange}
+                                        className=""
+                                        control={control}
+                                        setValue={setValue}
+                                        dropdownLabel="Select location"
+                                        name="beginningLocation"
+                                        list={districts}
+                                    />
+                                </div>
+                                <div className="flex flex-col text-left">
+                                    <Label htmlFor="" className="px-2 text-lg">
+                                        Ward
+                                    </Label>
+                                    <Dropdown
+                                        onChange={handleCityChange}
+                                        className=""
+                                        control={control}
+                                        setValue={setValue}
+                                        dropdownLabel="Select location"
+                                        name="beginningLocation"
+                                        list={wards}
+                                    />
+                                </div>
                             </div>
-                        </div>
-
-                        <div className="sm:col-span-2 sm:col-start-1">
-                            <label
-                                htmlFor="city"
-                                className="block text-sm font-medium leading-6 text-gray-900"
-                            >
-                                City
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    type="text"
-                                    name="city"
-                                    id="city"
-                                    autoComplete="address-level2"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
+                            <div className="text-left">
+                                <Label htmlFor="" className="px-2 text-lg">
+                                    Note
+                                </Label>
+                                <textarea
+                                    id="message"
+                                    rows={4}
+                                    className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Write your thoughts here..."
+                                ></textarea>
                             </div>
-                        </div>
-
-                        <div className="sm:col-span-2">
-                            <label
-                                htmlFor="region"
-                                className="block text-sm font-medium leading-6 text-gray-900"
-                            >
-                                State / Province
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    type="text"
-                                    name="region"
-                                    id="region"
-                                    autoComplete="address-level1"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
+                            <div className="text-left">
+                                <Label htmlFor="" className="px-2 text-lg">
+                                    Phương thức thanh toán
+                                </Label>
+                                <div className="h-[150px] border border-gray-400">
+                                    <div className="items-center content-center flex justify-items-center border border-b-gray-400 h-1/2 px-10">
+                                        <input
+                                            checked
+                                            id="default-radio-2"
+                                            type="radio"
+                                            value=""
+                                            name="default-radio"
+                                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                        />
+                                        <label
+                                            htmlFor=""
+                                            className="px-2 text-base font-normal"
+                                        >
+                                            Payment upon delivery (COD)
+                                        </label>
+                                    </div>
+                                    <div className="h-1/2 bg-gray-100 text-center items-center content-center">
+                                        Payment upon delivery (COD)
+                                    </div>
+                                    <div className="text-blue-300 mt-5">
+                                        <a href="/cart"> {"< Giỏ hàng"}</a>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-
-                        <div className="sm:col-span-2">
-                            <label
-                                htmlFor="postal-code"
-                                className="block text-sm font-medium leading-6 text-gray-900"
-                            >
-                                ZIP / Postal code
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    type="text"
-                                    name="postal-code"
-                                    id="postal-code"
-                                    autoComplete="postal-code"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
-                <div className="my-6 flex items-center justify-end gap-x-6 px-14">
-                    <button
-                        type="button"
-                        className="text-sm font-semibold leading-6 text-gray-900"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                        Save
-                    </button>
+                <div className="laptop:w-1/3 laptop:mt-0 border border-gray-400 p-5 w-full bg-gray-100 mt-10">
+                    <div>
+                        {[...Array(4)].map((_, index) => (
+                            <OrderCard
+                                key={index}
+                                index={index}
+                                price={80000}
+                                handleTotalPrice={handleTotalPrice}
+                            />
+                        ))}
+                    </div>
+                    <div>
+                        <div className="flex justify-between">
+                            <span>Subtotal</span>
+                            <span>
+                                {" "}
+                                {totalPrice.toLocaleString("vi", {
+                                    style: "currency",
+                                    currency: "VND",
+                                })}
+                            </span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>Shipping</span>
+                            <span>
+                                {(0).toLocaleString("vi", {
+                                    style: "currency",
+                                    currency: "VND",
+                                })}
+                            </span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>Total</span>
+                            <span>
+                                {totalPrice.toLocaleString("vi", {
+                                    style: "currency",
+                                    currency: "VND",
+                                })}
+                            </span>
+                        </div>
+                        <button className="w-full bg-blue-500 text-white p-2 rounded-md mt-5">
+                            Order
+                        </button>
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
     );
 };

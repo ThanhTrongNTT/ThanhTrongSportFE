@@ -2,8 +2,11 @@ import { useNavigate } from "react-router-dom";
 
 const LoginScreen = () => {
     const navigate = useNavigate();
+    const handleLogin = () => {
+        localStorage.setItem("isLogin", "true");
+    };
     return (
-        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 bg-gray-200">
             <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                 <div
                     className="text-white flex justify-center font-bold text-2xl pt-5 cursor-pointer"
@@ -78,6 +81,7 @@ const LoginScreen = () => {
                         <button
                             type="submit"
                             className="border-2 border-white w-full text-white bg-primary-600 hover:bg-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 hover:text-black hover:duration-500"
+                            onClick={handleLogin}
                         >
                             Sign in
                         </button>

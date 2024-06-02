@@ -1,14 +1,20 @@
+import ImageCustom from "../image/ImageCustom";
+
 const colors = ["#ffff", "#000"];
 
 const ProductCard = () => {
     return (
         <div className="bg-white rounded-md overflow-hidden shadow-md cursor-pointer hover:scale-[1.02] transition-all">
             <div className="w-full aspect-w-16 aspect-h-8 lg:h-80">
-                <img
-                    src="https://readymadeui.com/images/product1.webp"
+                <ImageCustom
+                    src={"https://readymadeui.com/images/product1.webp"}
+                    alt={"Product 1"}
+                />
+                {/* <img
+                    src=""
                     alt="Product 1"
                     className="h-full w-full object-cover object-top"
-                />
+                /> */}
             </div>
             <div className="p-6">
                 <span className="flex font-bold">

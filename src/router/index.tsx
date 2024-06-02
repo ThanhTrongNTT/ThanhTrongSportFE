@@ -27,8 +27,8 @@ const DeclareRouter = () => {
                 <Route path="/cart" element={<ShopCart />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/about" element={<AboutPage />} />
-                <Route path="/checkoutpage" element={<CheckoutPage />} />
             </Route>
+            <Route path="/order" element={<CheckoutPage />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
     );
