@@ -1,15 +1,83 @@
 import { useNavigate } from "react-router-dom";
+import AuthAPI from "../apis/authentication.api";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { toast } from "react-toastify";
+import Input from "../component/input/Input";
+import useToggleValue from "../component/common/useToggleValue";
+import TogglePassword from "../component/toggle/TogglePassword";
+import { useEffect } from "react";
 
+const schame = Yup.object({
+    email: Yup.string()
+        .required("Please enter your emaill address!")
+        .matches(
+            // eslint-disable-next-line no-control-regex
+            /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
+            { message: "Please enter valid email address" },
+        ),
+    password: Yup.string()
+        .required("Please enter your password")
+        .min(8, "Password must be 8 characters"),
+});
+
+type LoginType = {
+    email: string;
+    password: string;
+};
 const LoginScreen = () => {
+    const { value: showPassword, handleToggleValue: handleTogglePassword } =
+        useToggleValue();
     const navigate = useNavigate();
-    const handleLogin = () => {
+    const handleLogin = async (values: LoginType) => {
+        // await AuthAPI.login(values.email, values.password).then((res) => {
+        //     if (res.status === 200) {
+        //         localStorage.setItem("token", res.data.accessToken);
+        //         localStorage.setItem("refreshToken", res.data.refreshToken);
+        //         localStorage.setItem("isLogin", "true");
+        //         navigate("/");
+        //     }
+        // });
+        console.log(values);
+
         localStorage.setItem("isLogin", "true");
+        console.log("Login success");
+        toast.success("Login success");
     };
+
+    const {
+        handleSubmit,
+        control,
+        formState: { errors },
+    } = useForm({
+        resolver: yupResolver(schame),
+        mode: "onSubmit",
+    });
+
+    // Show error nếu có lỗi xảy ra
+    useEffect(() => {
+        console.log(Object.values(errors).length);
+
+        const arrErrors = Object.values(errors);
+        if (arrErrors.length > 0) {
+            if (arrErrors[0].message) {
+                const message = arrErrors[0].message;
+                toast.error(message.toString(), {
+                    autoClose: 1000,
+                    pauseOnHover: false,
+                    draggable: true,
+                    delay: 50,
+                });
+            }
+        }
+    }, [errors]);
+
     return (
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 bg-gray-200">
-            <div className="w-full bg-white rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0 bg-gray-800 border-gray-700">
+            <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0 border-gray-700">
                 <div
-                    className="text-white flex justify-center font-bold text-2xl pt-5 cursor-pointer"
+                    className="text-black flex justify-center font-bold text-2xl pt-5 cursor-pointer"
                     onClick={() => navigate("/")}
                 >
                     Logo
@@ -18,7 +86,10 @@ const LoginScreen = () => {
                     <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                         Log in to your account
                     </h1>
-                    <form className="space-y-4 md:space-y-6" action="#">
+                    <form
+                        className="space-y-4 md:space-y-6"
+                        onSubmit={handleSubmit(handleLogin)}
+                    >
                         <div>
                             <label
                                 htmlFor="email"
@@ -26,14 +97,14 @@ const LoginScreen = () => {
                             >
                                 Your email
                             </label>
-                            <input
-                                type="email"
+                            <Input
+                                variant={"outlined"}
+                                control={control}
                                 name="email"
-                                id="email"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="name@company.com"
-                                // required=""
-                            ></input>
+                                type="email"
+                                placeholder="Email"
+                                error={errors.email?.message ?? ""}
+                            />
                         </div>
                         <div>
                             <label
@@ -42,38 +113,24 @@ const LoginScreen = () => {
                             >
                                 Password
                             </label>
-                            <input
-                                type="password"
+                            <Input
+                                variant={"outlined"}
+                                control={control}
                                 name="password"
-                                id="password"
-                                placeholder="••••••••"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                // required=""
-                            ></input>
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password"
+                                error={errors.email?.message ?? ""}
+                            >
+                                <TogglePassword
+                                    open={showPassword}
+                                    onClick={handleTogglePassword}
+                                />
+                            </Input>
                         </div>
                         <div className="flex items-center justify-between">
-                            <div className="flex items-startcursor-pointer">
-                                <div className="flex items-center h-5">
-                                    <input
-                                        id="remember"
-                                        aria-describedby="remember"
-                                        type="checkbox"
-                                        className="cursor-pointer w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                                        // required=""
-                                    ></input>
-                                </div>
-                                <div className="ml-3 text-sm">
-                                    <label
-                                        htmlFor="remember"
-                                        className="cursor-pointer text-gray-500 dark:text-gray-300"
-                                    >
-                                        Remember me
-                                    </label>
-                                </div>
-                            </div>
                             <a
                                 href="#"
-                                className="text-sm font-medium text-white hover:underline dark:text-primary-500"
+                                className="text-sm font-medium text-black hover:underline"
                             >
                                 Forgot password?
                             </a>
@@ -81,11 +138,10 @@ const LoginScreen = () => {
                         <button
                             type="submit"
                             className="border-2 bg-cyan-300 border-white w-full text-white bg-primary-600 hover:bg-cyan-100 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-primary-600 hover:bg-primary-700 focus:ring-primary-800 hover:text-black hover:duration-500"
-                            onClick={handleLogin}
                         >
                             Sign in
                         </button>
-                        <p className="text-sm font-light text-gray-500 text-gray-400">
+                        <p className="text-sm font-light text-gray-400">
                             Don’t have an account yet?{" "}
                             <a
                                 href="/signup"
