@@ -92,6 +92,19 @@ const ProfilePage = () => {
                         className="mt-2 px-4 py-2 shadow rounded"
                     />
                 </div>
+                <div className="flex flex-col mb-4">
+                    <label>
+                        Mật Khẩu
+                        <span className="block text-xs font-light text-stone-400">
+                            Password
+                        </span>
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="*********"
+                        className="mt-2 px-4 py-2 shadow rounded"
+                    />
+                </div>
                 <div className="mt-10 text-left flex items-center">
                     <input
                         type="file"
