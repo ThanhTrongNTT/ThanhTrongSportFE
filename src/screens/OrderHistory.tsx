@@ -2,6 +2,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import classNames from "../utils/classNames";
 import { useNavigate } from "react-router-dom";
 import MenuHistory from "../component/menuHistory/menuHistory";
+import BarCodeHistory from "../component/menuHistory/BarCodeHistory";
 
 const OrderHistory = () => {
     const navigate = useNavigate();
@@ -30,8 +31,12 @@ const OrderHistory = () => {
                 <MenuHistory />
                 <MenuHistory />
             </div>
-            <div className="grid grid-flow-col col-span-3">
-                <h1>Order History</h1>
+            <div className="grid grid-row-3 col-span-3">
+                <h1 className="grid grid-cols-1">Order History</h1>
+                <BarCodeHistory />
+                <BarCodeHistory />
+                <BarCodeHistory />
+                <BarCodeHistory />
             </div>
         </div>
     );
