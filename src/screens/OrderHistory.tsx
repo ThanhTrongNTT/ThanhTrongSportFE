@@ -25,7 +25,14 @@ const OrderHistory = () => {
 
     return (
         <div className="grid grid-cols-4 mb-4 max-w-2xl sm:mx-auto mx-4 laptop:w-full mt-10 bg-white shadow-xl rounded-lg text-gray-900">
-            <MenuHistory />
+            <div className="flex flex-col">
+                <MenuHistory />
+                <MenuHistory />
+                <MenuHistory />
+            </div>
+            <div className="grid grid-flow-col col-span-3">
+                <h1>Order History</h1>
+            </div>
         </div>
     );
 };
