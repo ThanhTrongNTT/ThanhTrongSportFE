@@ -1,178 +1,199 @@
-import { Link, useNavigate } from "react-router-dom";
 import Tippy from "@tippyjs/react/headless";
-import Avt from "../avt/Avt";
-import Menu from "../menu/Menu";
-import { IconArrowDown } from "../icon/Icon";
-import classNames from "../../utils/classNames";
-import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { RootState, useAppSelector } from "../../redux/store";
+import Avt from "../avt/Avt";
+import { IconArrowDown } from "../icon/Icon";
+import Menu from "../menu/Menu";
 
 const Header = () => {
     const { userInfo } = useAppSelector((state: RootState) => state.user);
+    const location = useLocation();
     const navigate = useNavigate();
     const isLogin = sessionStorage.getItem("isLogin") === "true";
-    const [navItems, setNavItems] = useState([
+
+    const navItems = [
         {
             name: "Home",
             path: "/",
-            active: true,
         },
         {
             name: "Product",
             path: "/product",
-            active: false,
         },
-        { name: "About", path: "/about", active: false },
-    ]);
-    const handleNavItemClick = (index: number) => {
-        const updatedNavItems = navItems.map((item, i) => {
-            if (i === index) {
-                return { ...item, active: !item.active };
-            }
-            return { ...item, active: false };
-        });
-        setNavItems(updatedNavItems);
-        navigate(updatedNavItems[index].path);
-    };
+        {
+            name: "About",
+            path: "/about",
+        },
+        {
+            name: "Support",
+            path: "/support",
+        },
+    ];
+
     return (
-        <header className="shadow-md py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px]">
-            <div className="flex flex-wrap items-center justify-between gap-5 relative">
-                <Link to={"/"}>
-                    <img src="/Logo/logo.ico" alt="logo" className="w-36" />
-                </Link>
-                <div className="flex lg:order-1 max-sm:ml-auto">
-                    <button className="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-[#007bff] bg-[#007bff] transition-all ease-in-out duration-300 hover:bg-transparent hover:text-[#007bff] ml-3">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className="w-6 h-6"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-                            />
-                        </svg>
-                    </button>
-                    {isLogin || (
-                        <button
-                            className="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-[#007bff] bg-[#007bff] transition-all ease-in-out duration-300 hover:bg-transparent hover:text-[#007bff] ml-3"
-                            onClick={() => navigate("/login")}
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth="1.5"
-                                stroke="currentColor"
-                                className="w-6 h-6"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-                                />
-                            </svg>
-                        </button>
-                    )}
-
-                    <button className="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-[#007bff] bg-[#007bff] transition-all ease-in-out duration-300 hover:bg-transparent hover:text-[#007bff] ml-3">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className="w-6 h-6"
-                            onClick={() => navigate("/cart")}
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-                            />
-                        </svg>
-                    </button>
-
-                    <button id="toggle" className="lg:hidden ml-7">
-                        <svg
-                            className="w-7 h-7"
-                            fill="#000"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                fillRule="evenodd"
-                                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                                clipRule="evenodd"
-                            ></path>
-                        </svg>
-                    </button>
-                    {isLogin && (
-                        <div className="flex items-center mx-5">
-                            <div className="flex items-center gap-2">
-                                <Avt
-                                    sx="default"
-                                    src={
-                                        userInfo.userProfile.avatar.url ||
-                                        "https://images.unsplash.com/photo-1441123694162-e54a981ceba5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
-                                    }
-                                />
-                                <div className="flex items-center">
-                                    <p className="text-black">
-                                        {userInfo.userProfile.firstName &&
-                                            "" +
-                                                " " +
-                                                userInfo.userProfile.lastName &&
-                                            ""}
-                                    </p>
-                                    <Tippy
-                                        interactive
-                                        delay={[0, 200]}
-                                        offset={[0, 10]}
-                                        // visible
-                                        render={(attrs: any) => (
-                                            <div
-                                                className="w-[238px] rounded-2xl"
-                                                tabIndex={-1}
-                                                {...attrs}
-                                            >
-                                                <Menu />
+        <div className="bg-white sticky top-0 z-50">
+            <header className="relative bg-white">
+                <p className="flex h-10 items-center justify-center bg-indigo-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
+                    Get free delivery on orders over $100
+                </p>
+                <nav
+                    aria-label="Top"
+                    className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
+                >
+                    <div className="border-b border-gray-200">
+                        <div className="flex h-16 items-center">
+                            <div className="ml-4 flex lg:ml-0">
+                                <div onClick={() => navigate("/")}>
+                                    <img
+                                        className="h-8 w-auto cursor-pointer"
+                                        src="Logo/logo.png"
+                                        alt=""
+                                    />
+                                </div>
+                            </div>
+                            <div className="hidden lg:ml-8 lg:block lg:self-stretch">
+                                <div className="flex h-full space-x-8">
+                                    {navItems.map((item) => (
+                                        <div
+                                            key={item.name}
+                                            onClick={() => navigate(item.path)}
+                                            className={`border-transparent text-gray-700 hover:text-gray-800 relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition-colors duration-200 ease-out cursor-pointer ${item.path === location.pathname ? "border-indigo-600 text-indigo-600" : ""}`}
+                                        >
+                                            {item.name}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="ml-auto flex items-center">
+                                <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+                                    {isLogin ? (
+                                        <div className="flex items-center">
+                                            <div className="flex items-center gap-2">
+                                                <Avt
+                                                    sx="default"
+                                                    src={
+                                                        userInfo.userProfile
+                                                            .avatar.url ||
+                                                        "https://images.unsplash.com/photo-1441123694162-e54a981ceba5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
+                                                    }
+                                                />
+                                                <div className="flex items-center">
+                                                    <p className="text-black">
+                                                        {userInfo.userProfile
+                                                            .firstName &&
+                                                            "" +
+                                                                " " +
+                                                                userInfo
+                                                                    .userProfile
+                                                                    .lastName &&
+                                                            ""}
+                                                    </p>
+                                                    <Tippy
+                                                        interactive
+                                                        delay={[0, 200]}
+                                                        offset={[0, 10]}
+                                                        // visible
+                                                        render={(
+                                                            attrs: any,
+                                                        ) => (
+                                                            <div
+                                                                className="w-[238px] rounded-2xl"
+                                                                tabIndex={-1}
+                                                                {...attrs}
+                                                            >
+                                                                <Menu />
+                                                            </div>
+                                                        )}
+                                                    >
+                                                        <span className="cursor-pointer px-2 py-4 text-black">
+                                                            <IconArrowDown />
+                                                        </span>
+                                                    </Tippy>
+                                                </div>
                                             </div>
-                                        )}
-                                    >
-                                        <span className="cursor-pointer px-2 py-4 text-black">
-                                            <IconArrowDown />
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div
+                                                onClick={() =>
+                                                    navigate("/login")
+                                                }
+                                                className="text-sm font-medium text-gray-700 hover:text-gray-800 cursor-pointer"
+                                            >
+                                                Sign in
+                                            </div>
+                                            <span
+                                                className="h-6 w-px bg-gray-200"
+                                                aria-hidden="true"
+                                            ></span>
+                                            <div
+                                                onClick={() =>
+                                                    navigate("/signup")
+                                                }
+                                                className="text-sm font-medium text-gray-700 hover:text-gray-800 cursor-pointer"
+                                            >
+                                                Create account
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                                <div className="hidden lg:ml-8 lg:flex">
+                                    <div className="flex items-center text-gray-700 hover:text-gray-800">
+                                        <img
+                                            src="Logo/icon_VN.png"
+                                            alt=""
+                                            className="block h-auto w-5 flex-shrink-0"
+                                        />
+                                        <span className="ml-3 block text-sm font-medium">
+                                            VIE
                                         </span>
-                                    </Tippy>
+                                    </div>
+                                </div>
+                                <div className="flex lg:ml-6">
+                                    <div className="p-2 text-gray-400 hover:text-gray-500 cursor-pointer">
+                                        <svg
+                                            className="h-6 w-6"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth="1.5"
+                                            stroke="currentColor"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div className="ml-4 flow-root lg:ml-6">
+                                    <div className="group -m-2 flex items-center p-2 cursor-pointer">
+                                        <svg
+                                            className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth="1.5"
+                                            stroke="currentColor"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                                            />
+                                        </svg>
+                                        <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+                                            0
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    )}
-                </div>
-                <ul
-                    id="collapseMenu"
-                    className="lg:!flex max-lg:space-y-2 max-lg:hidden max-lg:py-4 max-lg:w-full"
-                >
-                    {navItems.map((item, index) => (
-                        <li className="px-3" key={index}>
-                            <div
-                                onClick={() => handleNavItemClick(index)}
-                                className={classNames(
-                                    "lg:hover:text-[#007bff] text-gray-500 block font-semibold text-2xl",
-                                    item.active ? "text-[#007bff]" : "",
-                                )}
-                            >
-                                {item.name}
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        </header>
+                    </div>
+                </nav>
+            </header>
+        </div>
     );
 };
 
