@@ -1,7 +1,4 @@
 import ImageCustom from "../image/ImageCustom";
-
-const colors = ["#ffff", "#000"];
-
 const ProductCard = () => {
     return (
         <div className="bg-white rounded-md overflow-hidden shadow-md cursor-pointer hover:scale-[1.02] transition-all">
@@ -10,27 +7,11 @@ const ProductCard = () => {
                     src={"https://readymadeui.com/images/product1.webp"}
                     alt={"Product 1"}
                 />
-                {/* <img
-                    src=""
-                    alt="Product 1"
-                    className="h-full w-full object-cover object-top"
-                /> */}
             </div>
             <div className="p-6">
-                <span className="flex font-bold">
-                    Colors:{" "}
-                    {colors.map((color, index) => (
-                        <div
-                            key={index}
-                            style={{ backgroundColor: color }}
-                            className="w-5 h-5 inline-block mx-2 border-2"
-                            title={color} // Để biết được mã màu khi di chuột vào
-                        ></div>
-                    ))}
-                </span>
                 <div className="grid grid-cols-2 divide-x">
                     <div>UNISEX</div>
-                    <div className="grid justify-items-end">XS-XXL</div>
+                    {/* <div className="grid justify-items-end">XS-XXL</div> */}
                 </div>
                 <h3 className="text-lg font-bold text-gray-800">
                     Lexicon Luxe | T-shirt

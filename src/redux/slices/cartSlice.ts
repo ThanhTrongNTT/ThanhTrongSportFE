@@ -2,22 +2,22 @@
 // For example, logging a value to the console, ajax
 // Just keep it simple
 import { createSlice } from "@reduxjs/toolkit";
-export interface AppState {
+interface CartState {
     initialState: boolean;
 }
-const initialState: AppState = {
+const initialState: CartState = {
     initialState: false,
 };
 
-export const appSlice = createSlice({
-    name: "app",
+export const cartSlice = createSlice({
+    name: "cart",
     initialState,
     reducers: {
-        login: (state) => {
+        setCart: (state) => {
             state.initialState = true;
         },
     },
 });
-export const { login } = appSlice.actions;
+export const { setCart } = cartSlice.actions;
 
-export default appSlice.reducer;
+export default cartSlice.reducer;

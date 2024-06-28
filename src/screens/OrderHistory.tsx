@@ -6,7 +6,7 @@ import BarCodeHistory from "../component/menuHistory/BarCodeHistory";
 
 const OrderHistory = () => {
     const navigate = useNavigate();
-    const isLogin = localStorage.getItem("isLogin") === "true";
+    const isLogin = sessionStorage.getItem("isLogin") === "true";
     const [disable, setDisable] = useState<boolean>(true);
 
     const [images, setImages] = useState<Array<string | File>>([]);

@@ -1,18 +1,18 @@
-import React from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
-import LoginScreen from "../screens/LoginScreen";
-import SignUpPage from "../screens/SignUpPage";
-import HomePage from "../screens/HomePage";
+import { Route, Routes } from "react-router-dom";
 import LayoutDefault from "../layout/LayoutDefault";
+import HomePage from "../screens/HomePage";
+import LoginScreen from "../screens/LoginScreen";
 import NotFound from "../screens/NotFound";
+import SignUpPage from "../screens/SignUpPage";
 
-import ProductPage from "../screens/ProductPage.tsx";
-import ProductView from "../screens/ProductView.tsx";
-import ShopCart from "../screens/ShopCart.tsx";
-import ProfilePage from "../screens/ProfilePage.tsx";
 import AboutPage from "../screens/AboutPage.tsx";
 import CheckoutPage from "../screens/CheckoutPage.tsx";
+import ForgotPassword from "../screens/ForgotPassword.tsx";
 import OrderHistory from "../screens/OrderHistory.tsx";
+import ProductPage from "../screens/ProductPage.tsx";
+import ProductView from "../screens/ProductView.tsx";
+import ProfilePage from "../screens/ProfilePage.tsx";
+import ShopCart from "../screens/ShopCart.tsx";
 
 const DeclareRouter = () => {
     return (
@@ -21,6 +21,7 @@ const DeclareRouter = () => {
 
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route element={<LayoutDefault />}>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/product" element={<ProductPage />} />

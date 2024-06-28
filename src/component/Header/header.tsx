@@ -1,19 +1,45 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Tippy from "@tippyjs/react/headless";
 import Avt from "../avt/Avt";
 import Menu from "../menu/Menu";
 import { IconArrowDown } from "../icon/Icon";
+import classNames from "../../utils/classNames";
+import { useState } from "react";
+import { RootState, useAppSelector } from "../../redux/store";
 
 const Header = () => {
+    const { userInfo } = useAppSelector((state: RootState) => state.user);
     const navigate = useNavigate();
-    const isLogin = localStorage.getItem("isLogin") === "true";
-
+    const isLogin = sessionStorage.getItem("isLogin") === "true";
+    const [navItems, setNavItems] = useState([
+        {
+            name: "Home",
+            path: "/",
+            active: true,
+        },
+        {
+            name: "Product",
+            path: "/product",
+            active: false,
+        },
+        { name: "About", path: "/about", active: false },
+    ]);
+    const handleNavItemClick = (index: number) => {
+        const updatedNavItems = navItems.map((item, i) => {
+            if (i === index) {
+                return { ...item, active: !item.active };
+            }
+            return { ...item, active: false };
+        });
+        setNavItems(updatedNavItems);
+        navigate(updatedNavItems[index].path);
+    };
     return (
         <header className="shadow-md py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px]">
             <div className="flex flex-wrap items-center justify-between gap-5 relative">
-                <a onClick={() => navigate("/")}>
-                    <img src="" alt="logo" className="w-36" />
-                </a>
+                <Link to={"/"}>
+                    <img src="/Logo/logo.ico" alt="logo" className="w-36" />
+                </Link>
                 <div className="flex lg:order-1 max-sm:ml-auto">
                     <button className="px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-[#007bff] bg-[#007bff] transition-all ease-in-out duration-300 hover:bg-transparent hover:text-[#007bff] ml-3">
                         <svg
@@ -91,12 +117,18 @@ const Header = () => {
                                 <Avt
                                     sx="default"
                                     src={
-                                        // userInfo?.avatar.replaceAll('"', '') ||
+                                        userInfo.userProfile.avatar.url ||
                                         "https://images.unsplash.com/photo-1441123694162-e54a981ceba5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
                                     }
                                 />
                                 <div className="flex items-center">
-                                    <p className="text-black">{"ThanhTrong"}</p>
+                                    <p className="text-black">
+                                        {userInfo.userProfile.firstName &&
+                                            "" +
+                                                " " +
+                                                userInfo.userProfile.lastName &&
+                                            ""}
+                                    </p>
                                     <Tippy
                                         interactive
                                         delay={[0, 200]}
@@ -125,30 +157,19 @@ const Header = () => {
                     id="collapseMenu"
                     className="lg:!flex max-lg:space-y-2 max-lg:hidden max-lg:py-4 max-lg:w-full"
                 >
-                    <li className="max-lg:border-b max-lg:bg-[#007bff] max-lg:py-2 px-3 max-lg:rounded">
-                        <a
-                            onClick={() => navigate("/")}
-                            className="lg:hover:text-[#007bff] text-[#007bff] max-lg:text-white block font-semibold text-[15px]"
-                        >
-                            Home
-                        </a>
-                    </li>
-                    <li className="max-lg:border-b max-lg:py-2 px-3 max-lg:rounded">
-                        <a
-                            onClick={() => navigate("/product")}
-                            className="lg:hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]"
-                        >
-                            Product
-                        </a>
-                    </li>
-                    <li className="max-lg:border-b max-lg:py-2 px-3 max-lg:rounded">
-                        <a
-                            onClick={() => navigate("/about")}
-                            className="lg:hover:text-[#007bff] text-gray-500 block font-semibold text-[15px]"
-                        >
-                            About
-                        </a>
-                    </li>
+                    {navItems.map((item, index) => (
+                        <li className="px-3" key={index}>
+                            <div
+                                onClick={() => handleNavItemClick(index)}
+                                className={classNames(
+                                    "lg:hover:text-[#007bff] text-gray-500 block font-semibold text-2xl",
+                                    item.active ? "text-[#007bff]" : "",
+                                )}
+                            >
+                                {item.name}
+                            </div>
+                        </li>
+                    ))}
                 </ul>
             </div>
         </header>

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import ProductFeature from "../component/productFeature/ProductFeature";
 
 const HomePage = () => {
@@ -16,12 +17,12 @@ const HomePage = () => {
                                 that doesn't care if you live or die.
                             </p>
                         </div>
-                        <a
-                            href="#"
+                        <Link
                             className="inline-block mt-5 rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-center font-medium text-white hover:bg-indigo-700"
+                            to={"/product"}
                         >
                             Shop Collection
-                        </a>
+                        </Link>
                         <div>
                             <div className="py-20">
                                 {/* Decorative image grid */}

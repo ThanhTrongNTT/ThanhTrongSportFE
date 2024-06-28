@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthAPI from "../apis/authentication.api";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -8,6 +8,11 @@ import Input from "../component/input/Input";
 import useToggleValue from "../component/common/useToggleValue";
 import TogglePassword from "../component/toggle/TogglePassword";
 import { useEffect } from "react";
+import { useAppDispatch } from "../redux/store";
+import { JWTType, User } from "../data/interface";
+import jwtDecode from "jwt-decode";
+import { update, updateToken } from "../redux/slices/userSlice";
+import UserApi from "../apis/user.api";
 
 const schame = Yup.object({
     email: Yup.string()
@@ -27,23 +32,53 @@ type LoginType = {
     password: string;
 };
 const LoginScreen = () => {
+    const dispatch = useAppDispatch();
     const { value: showPassword, handleToggleValue: handleTogglePassword } =
         useToggleValue();
     const navigate = useNavigate();
     const handleLogin = async (values: LoginType) => {
-        // await AuthAPI.login(values.email, values.password).then((res) => {
-        //     if (res.status === 200) {
-        //         localStorage.setItem("token", res.data.accessToken);
-        //         localStorage.setItem("refreshToken", res.data.refreshToken);
-        //         localStorage.setItem("isLogin", "true");
-        //         navigate("/");
-        //     }
-        // });
-        console.log(values);
-
-        localStorage.setItem("isLogin", "true");
-        console.log("Login success");
-        toast.success("Login success");
+        await AuthAPI.login(values.email, values.password)
+            .then(async (res) => {
+                sessionStorage.setItem("isLogin", "true");
+                sessionStorage.setItem("accessToken", res.data.accessToken);
+                sessionStorage.setItem("refreshToken", res.data.refreshToken);
+                dispatch(
+                    updateToken({
+                        accessToken: res.data.accessToken,
+                        refreshToken: res.data.refreshToken,
+                    }),
+                );
+                await UserApi.getUserByEmail(values.email)
+                    .then((res) => {
+                        const userProfile: User = res.data;
+                        dispatch(update(userProfile));
+                        navigate("/");
+                        toast.success("Login Success!", {
+                            autoClose: 500,
+                            delay: 10,
+                            draggable: true,
+                            pauseOnHover: false,
+                        });
+                    })
+                    .catch((err) => {
+                        toast.error(err.message, {
+                            autoClose: 500,
+                            delay: 10,
+                            draggable: true,
+                            pauseOnHover: false,
+                        });
+                    });
+            })
+            .catch((err) => {
+                if (err.status === 404) {
+                    toast.error(`User does not esited!`, {
+                        autoClose: 500,
+                        delay: 10,
+                        draggable: true,
+                        pauseOnHover: false,
+                    });
+                }
+            });
     };
 
     const {
@@ -57,8 +92,6 @@ const LoginScreen = () => {
 
     // Show error nếu có lỗi xảy ra
     useEffect(() => {
-        console.log(Object.values(errors).length);
-
         const arrErrors = Object.values(errors);
         if (arrErrors.length > 0) {
             if (arrErrors[0].message) {
@@ -128,12 +161,12 @@ const LoginScreen = () => {
                             </Input>
                         </div>
                         <div className="flex items-center justify-between">
-                            <a
-                                href="#"
+                            <Link
+                                to={"/forgot-password"}
                                 className="text-sm font-medium text-black hover:underline"
                             >
                                 Forgot password?
-                            </a>
+                            </Link>
                         </div>
                         <button
                             type="submit"

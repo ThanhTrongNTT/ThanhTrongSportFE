@@ -4,14 +4,14 @@ import { toast } from "react-toastify";
 
 const AxiosClient = axios.create({
     // baseURL: process.env.REACT_APP_API_URL,
-    baseURL: "http://localhost:8081/api/v1/",
+    baseURL: "http://localhost:8080/api/v1/",
     headers: {
         "Content-Type": "application/json",
     },
 });
 // @ts-ignore
 AxiosClient.interceptors.request.use(async (config: AxiosRequestConfig) => {
-    const accessToken = await localStorage.getItem("token");
+    const accessToken = await sessionStorage.getItem("accessToken");
     if (accessToken)
         config.headers = {
             ...config.headers,
@@ -46,7 +46,7 @@ AxiosClient.interceptors.response.use(
 
         if (error.response.status === 401) {
             const prevRequest = error.config;
-            const refreshToken = await localStorage.getItem("refreshToken");
+            const refreshToken = await sessionStorage.getItem("refreshToken");
             prevRequest.sent = true;
             console.log("refreshToken: ", refreshToken);
             const config = {
@@ -55,13 +55,13 @@ AxiosClient.interceptors.response.use(
                 },
             };
             const newAccessToken = await axios.post(
-                `http://localhost:8081/api/v1/token/${refreshToken}`,
+                `http://localhost:8080/api/v1/token/${refreshToken}`,
                 config,
             );
             console.log("newAccessToken", newAccessToken);
             if (newAccessToken.data.data.accessToken) {
-                localStorage.setItem(
-                    "token",
+                sessionStorage.setItem(
+                    "accessToken",
                     newAccessToken.data.data.accessToken,
                 );
             }

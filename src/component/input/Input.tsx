@@ -30,7 +30,7 @@ const Input = ({
         defaultValue: "",
     });
     let defaultClasses =
-        "text-sm font-medium font-Poppins transition-all w-full dark:border-dark-stroke dark:text-black ";
+        "text-sm font-medium font-Poppins transition-all w-full focus:outline-none focus:ring-2 focus:ring-c2 focus:ring-opacity-50 border border-gray-c3 rounded-xl px-6 py-4 text-c3";
     switch (variant) {
         case "outlined":
             defaultClasses +=
@@ -54,9 +54,9 @@ const Input = ({
                         : "border-gray-c3 text-black",
                     children ? "pr-16" : "",
                     pointer && "cursor-pointer",
-                    // 'focus:border-gray-c6 transition-all px-3 py-3 m-2',
+                    "transition-all px-3 py-3 m-2 focus:border-none",
                 )}
-                placeholder={error.length > 0 ? "" : placeholder}
+                placeholder={error.length > 0 ? error : placeholder}
                 {...field}
                 {...rest}
             />

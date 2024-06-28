@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import LocationApi from "../apis/localtion.api";
 import BreadCrumb from "../component/breadcrumb/BreadCrumb";
 import OrderCard from "../component/card/OrderCard";
 import Dropdown from "../component/dropdown/Dropdown";
@@ -123,19 +122,7 @@ const CheckoutPage = () => {
         }
     }, [selectedDistrict, districts]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await LocationApi.getLocations();
-                setLocationList(res.data);
-                setCities(getNamesFromLocations(res.data));
-            } catch (error) {
-                console.error("Error fetching locations:", error);
-            }
-        };
-
-        fetchData();
-    }, []);
+    useEffect(() => {}, []);
     return (
         <div className="p-10 w-3/4 text-center mx-auto">
             <h2 className="text-5xl font-bold text-center">H&T Store</h2>

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
     const navigate = useNavigate();
-    const isLogin = localStorage.getItem("isLogin") === "true";
+    const isLogin = sessionStorage.getItem("isLogin") === "true";
     const [disable, setDisable] = useState<boolean>(true);
 
     const [images, setImages] = useState<Array<string | File>>([]);

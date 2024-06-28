@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 const Menu = () => {
     const dispatch = useDispatch();
     const handlerLogout = () => {
-        localStorage.clear();
+        sessionStorage.clear();
         toast.success(`Logout success!`, {
             autoClose: 500,
             delay: 10,
