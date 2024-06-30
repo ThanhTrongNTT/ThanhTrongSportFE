@@ -15,7 +15,7 @@ const CategoryAPI = {
         return AxiosClient.get(url);
     },
     getCategoryById: (id: string) => {
-        const url = `categroies/${id}`;
+        const url = `categories/${id}`;
         return AxiosClient.get(url);
     },
 };

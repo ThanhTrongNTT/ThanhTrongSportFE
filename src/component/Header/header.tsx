@@ -54,13 +54,13 @@ const Header = () => {
                             <div className="hidden lg:ml-8 lg:block lg:self-stretch">
                                 <div className="flex h-full space-x-8">
                                     {navItems.map((item) => (
-                                        <div
+                                        <button
                                             key={item.name}
                                             onClick={() => navigate(item.path)}
-                                            className={`border-transparent text-gray-700 hover:text-gray-800 relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition-colors duration-200 ease-out cursor-pointer ${item.path === location.pathname ? "border-indigo-600 text-indigo-600" : ""}`}
+                                            className={` text-gray-700 hover:text-gray-800 relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition-colors duration-200 ease-out cursor-pointer ${item.path === location.pathname ? "border-indigo-600 text-indigo-600" : "border-transparent"}`}
                                         >
                                             {item.name}
-                                        </div>
+                                        </button>
                                     ))}
                                 </div>
                             </div>

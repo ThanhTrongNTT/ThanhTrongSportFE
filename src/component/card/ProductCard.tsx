@@ -1,11 +1,21 @@
+import { Product } from "../../data/interface";
 import ImageCustom from "../image/ImageCustom";
-const ProductCard = () => {
+
+type ProductCardProps = {
+    product: Product;
+};
+
+const ProductCard = ({ product }: ProductCardProps) => {
     return (
         <div className="bg-white rounded-md overflow-hidden shadow-md cursor-pointer hover:scale-[1.02] transition-all">
             <div className="w-full aspect-w-16 aspect-h-8 lg:h-80">
                 <ImageCustom
-                    src={"https://readymadeui.com/images/product1.webp"}
-                    alt={"Product 1"}
+                    src={
+                        product.images.length > 0
+                            ? product.images[0].url
+                            : "https://readymadeui.com/images/product1.webp"
+                    }
+                    alt={product.productName}
                 />
             </div>
             <div className="p-6">
@@ -14,11 +24,13 @@ const ProductCard = () => {
                     {/* <div className="grid justify-items-end">XS-XXL</div> */}
                 </div>
                 <h3 className="text-lg font-bold text-gray-800">
-                    Lexicon Luxe | T-shirt
+                    {product.productName}
                 </h3>
-                <h1>Lorem Ipsum is Lorem Ipsum Lorem Ipsum is Lorem Ipsum</h1>
+                <h1>{product.description}</h1>
                 <div className="mt-4 flex items-center flex-wrap gap-2">
-                    <h3 className="text-2xl text-gray-700">784.000 VND</h3>
+                    <h3 className="text-2xl text-gray-700">
+                        {product.price} VND
+                    </h3>
                     <div className="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer ml-auto">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

@@ -18,14 +18,14 @@ const ProductAPI = {
         const url = `products/search-by-name?keyword=${searchParam.keyWord}&pageNo=${searchParam.pageNo}&pageSize=${searchParam.pageSize}&sortBy=${searchParam.sortBy}&sortDir=${searchParam.sortDir}`;
         return AxiosClient.get(url);
     },
-    serachProductByCategory: (
-        categoryname: string,
+    searchProductByCategory: (
+        categoryName: string,
         pageNo: number,
         pageSize: number,
         sortBy: string,
         sortDir: string,
-    ): Promise<AxiosResponse<PageResponse<Product>>> => {
-        const url = `products/search-by-category?categoryName=${categoryname}&pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}`;
+    ): Promise<PageResponse<Product>> => {
+        const url = `products/search-by-category?categoryName=${categoryName}&pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}`;
         return AxiosClient.get(url);
     },
     searchProductByPrice: (

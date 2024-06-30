@@ -1,41 +1,410 @@
+import { useEffect, useState } from "react";
 import ProductAPI from "../apis/product.api";
 import ProductCard from "../component/card/ProductCard";
 import MenuCategory from "../component/menuCategory/MenuCategory";
+import { Category, Product } from "../data/interface";
+import {
+    Dialog,
+    DialogBackdrop,
+    DialogPanel,
+    Disclosure,
+    DisclosureButton,
+    DisclosurePanel,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuItems,
+} from "@headlessui/react";
+import {
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    XMarkIcon,
+} from "@heroicons/react/24/outline";
+import {
+    ChevronDownIcon,
+    FunnelIcon,
+    MinusIcon,
+    PlusIcon,
+    Squares2X2Icon,
+} from "@heroicons/react/20/solid";
+import CategoryAPI from "../apis/category.api";
+
+let sortOptions = [
+    { name: "Most Popular", sortBy: "#", sortDir: "asc", current: false },
+    { name: "Best Rating", sortBy: "#", sortDir: "asc", current: false },
+    { name: "Newest", sortBy: "createdDate", sortDir: "asc", current: true },
+    {
+        name: "Price: Low to High",
+        sortBy: "price",
+        sortDir: "asc",
+        current: false,
+    },
+    {
+        name: "Price: High to Low",
+        sortBy: "price",
+        sortDir: "des",
+        current: false,
+    },
+];
+
+const filters = [
+    {
+        id: "color",
+        name: "Color",
+        options: [
+            { value: "white", label: "White", checked: false },
+            { value: "beige", label: "Beige", checked: false },
+            { value: "blue", label: "Blue", checked: true },
+            { value: "brown", label: "Brown", checked: false },
+            { value: "green", label: "Green", checked: false },
+            { value: "purple", label: "Purple", checked: false },
+        ],
+    },
+    {
+        id: "size",
+        name: "Size",
+        options: [
+            { value: "2l", label: "2L", checked: false },
+            { value: "6l", label: "6L", checked: false },
+            { value: "12l", label: "12L", checked: false },
+            { value: "18l", label: "18L", checked: false },
+            { value: "20l", label: "20L", checked: false },
+            { value: "40l", label: "40L", checked: true },
+        ],
+    },
+    {
+        id: "price",
+        name: "Price",
+        options: [
+            { value: "new-arrivals", label: "Under 10$", checked: false },
+            { value: "sale", label: "10$ - 50$ ", checked: false },
+            { value: "travel", label: "50$ - 100$", checked: true },
+            { value: "organization", label: "100$ - 500%", checked: false },
+            { value: "accessories", label: "Over 500$", checked: false },
+        ],
+    },
+];
+
+function classNames(...classes: any) {
+    return classes.filter(Boolean).join(" ");
+}
 
 const ProductPage = () => {
-    const getProductsByCategory = async (categoryName: string) => {
-        await ProductAPI.serachProductByCategory(
-            categoryName,
-            0,
-            5,
-            "createdDate",
-            "asc",
-        ).then((res) => {
+    const [products, setProducts] = useState<Product[]>([]);
+    console.log("🚀 ~ ProductPage ~ products:", products);
+
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [categoryName, setCategoryName] = useState<string>("");
+    const [pageNo, setPageNo] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(5);
+    const [sortBy, setSortBy] = useState<string>("createdDate");
+    const [sortDir, setSortDir] = useState<string>("asc");
+
+    const getCategories = async () => {
+        await CategoryAPI.getCategories().then((res) => {
             if (res.data) {
-                console.log(res.data);
+                setCategories(res.data);
             }
         });
     };
+
+    useEffect(() => {
+        getCategories();
+    }, []);
+
+    const getProductsByCategory = async () => {
+        await ProductAPI.searchProductByCategory(
+            categoryName,
+            pageNo,
+            pageSize,
+            sortBy,
+            sortDir,
+        ).then((res) => {
+            if (res.data) {
+                setProducts(res.data.content);
+            }
+        });
+    };
+
+    useEffect(() => {
+        getProductsByCategory();
+    }, [categoryName, pageNo, pageSize, sortBy, sortDir]);
+
     return (
-        <div className="font-[sans-serif]">
-            <div className="p-4 mx-auto lg:max-w-6xl md:max-w-4xl sm:max-w-full">
-                <h2 className="text-4xl font-extrabold text-gray-800">
-                    Wearing
-                </h2>
-                <div className="p-4 mx-auto lg:max-w-6xl md:max-w-4xl sm:max-w-full grid grid-cols-4">
-                    <div className="max-h-fit space-y-4 w-1xl flex flex-col">
-                        <MenuCategory
-                            getProductsByCategory={getProductsByCategory}
-                        />
-                    </div>
-                    <div className="w-3xl grid grid-cols-1 col-span-3 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <ProductCard />
-                        <ProductCard />
-                        <ProductCard />
-                        <ProductCard />
+        <div className="bg-white">
+            <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="flex items-baseline justify-between border-b border-gray-200 py-3">
+                    <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+                        Wearing
+                    </h1>
+                    <div className="flex items-center">
+                        <Menu
+                            as="div"
+                            className="relative inline-block text-left"
+                        >
+                            <div>
+                                <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                                    Sort
+                                    <ChevronDownIcon
+                                        className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                                        aria-hidden="true"
+                                    />
+                                </MenuButton>
+                            </div>
+                            <MenuItems
+                                transition
+                                className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                            >
+                                <div className="py-1">
+                                    {sortOptions.map((option) => (
+                                        <MenuItem key={option.name}>
+                                            {({ focus }) => (
+                                                <div
+                                                    onClick={() => {
+                                                        setSortBy(
+                                                            option.sortBy,
+                                                        );
+                                                        setSortDir(
+                                                            option.sortDir,
+                                                        );
+                                                        sortOptions.forEach(
+                                                            (opt) =>
+                                                                (opt.current =
+                                                                    opt.name ===
+                                                                    option.name
+                                                                        ? true
+                                                                        : false),
+                                                        );
+                                                    }}
+                                                    className={classNames(
+                                                        option.current
+                                                            ? "font-medium text-gray-900"
+                                                            : "text-gray-500",
+                                                        focus
+                                                            ? "bg-gray-100"
+                                                            : "",
+                                                        "block px-4 py-2 text-sm",
+                                                    )}
+                                                >
+                                                    {option.name}
+                                                </div>
+                                            )}
+                                        </MenuItem>
+                                    ))}
+                                </div>
+                            </MenuItems>
+                        </Menu>
+                        <button
+                            type="button"
+                            className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
+                        >
+                            <Squares2X2Icon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                            />
+                        </button>
                     </div>
                 </div>
-            </div>
+                <section
+                    aria-labelledby="products-heading"
+                    className="pb-24 pt-6"
+                >
+                    <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+                        <div className="hidden lg:block">
+                            <ul
+                                role="list"
+                                className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900"
+                            >
+                                {categories.map((category) => (
+                                    <li
+                                        className="cursor-pointer"
+                                        key={category.id}
+                                        onClick={() =>
+                                            setCategoryName(
+                                                category.categoryName,
+                                            )
+                                        }
+                                    >
+                                        {category.categoryName}
+                                    </li>
+                                ))}
+                            </ul>
+                            {filters.map((section) => (
+                                <Disclosure
+                                    as="div"
+                                    key={section.id}
+                                    className="border-b border-gray-200 py-6"
+                                >
+                                    {({ open }) => (
+                                        <>
+                                            <h3 className="-my-3 flow-root">
+                                                <DisclosureButton className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                                                    <span className="font-medium text-gray-900">
+                                                        {section.name}
+                                                    </span>
+                                                    <span className="ml-6 flex items-center">
+                                                        {open ? (
+                                                            <MinusIcon
+                                                                className="h-5 w-5"
+                                                                aria-hidden="true"
+                                                            />
+                                                        ) : (
+                                                            <PlusIcon
+                                                                className="h-5 w-5"
+                                                                aria-hidden="true"
+                                                            />
+                                                        )}
+                                                    </span>
+                                                </DisclosureButton>
+                                            </h3>
+                                            <DisclosurePanel className="pt-6">
+                                                <div className="space-y-4">
+                                                    {section.options.map(
+                                                        (option, optionIdx) => (
+                                                            <div
+                                                                key={
+                                                                    option.value
+                                                                }
+                                                                className="flex items-center"
+                                                            >
+                                                                <input
+                                                                    id={`filter-${section.id}-${optionIdx}`}
+                                                                    name={`${section.id}[]`}
+                                                                    defaultValue={
+                                                                        option.value
+                                                                    }
+                                                                    type="checkbox"
+                                                                    defaultChecked={
+                                                                        option.checked
+                                                                    }
+                                                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                                                />
+                                                                <label
+                                                                    htmlFor={`filter-${section.id}-${optionIdx}`}
+                                                                    className="ml-3 text-sm text-gray-600"
+                                                                >
+                                                                    {
+                                                                        option.label
+                                                                    }
+                                                                </label>
+                                                            </div>
+                                                        ),
+                                                    )}
+                                                </div>
+                                            </DisclosurePanel>
+                                        </>
+                                    )}
+                                </Disclosure>
+                            ))}
+                        </div>
+                        <div className="w-3xl grid grid-cols-1 col-span-3 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {products.length > 0 ? (
+                                products.map((product) => (
+                                    <ProductCard
+                                        key={product.id}
+                                        product={product}
+                                    />
+                                ))
+                            ) : (
+                                <></>
+                            )}
+                            <div className="flex items-end justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 sm:col-span-2 lg:col-span-3">
+                                <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                                    <div>
+                                        <p className="text-sm text-gray-700">
+                                            Showing{" "}
+                                            <span className="font-medium">
+                                                {pageNo * pageSize + 1}
+                                            </span>{" "}
+                                            to{" "}
+                                            <span className="font-medium">
+                                                {(pageNo + 1) * pageSize}
+                                            </span>{" "}
+                                            of{" "}
+                                            <span className="font-medium">
+                                                {products.length}
+                                            </span>{" "}
+                                            results
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <nav
+                                            className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+                                            aria-label="Pagination"
+                                        >
+                                            <a
+                                                href="#"
+                                                className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                                            >
+                                                <span className="sr-only">
+                                                    Previous
+                                                </span>
+                                                <ChevronLeftIcon
+                                                    className="h-5 w-5"
+                                                    aria-hidden="true"
+                                                />
+                                            </a>
+                                            {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
+                                            <a
+                                                href="#"
+                                                aria-current="page"
+                                                className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                            >
+                                                1
+                                            </a>
+                                            <a
+                                                href="#"
+                                                className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                                            >
+                                                2
+                                            </a>
+                                            <a
+                                                href="#"
+                                                className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
+                                            >
+                                                3
+                                            </a>
+                                            <span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">
+                                                ...
+                                            </span>
+                                            <a
+                                                href="#"
+                                                className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
+                                            >
+                                                8
+                                            </a>
+                                            <a
+                                                href="#"
+                                                className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                                            >
+                                                9
+                                            </a>
+                                            <a
+                                                href="#"
+                                                className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                                            >
+                                                10
+                                            </a>
+                                            <a
+                                                href="#"
+                                                className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                                            >
+                                                <span className="sr-only">
+                                                    Next
+                                                </span>
+                                                <ChevronRightIcon
+                                                    className="h-5 w-5"
+                                                    aria-hidden="true"
+                                                />
+                                            </a>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
         </div>
     );
 };
