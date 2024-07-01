@@ -86,7 +86,7 @@ const ProductPage = () => {
     const { keyword } = useParams<{ keyword?: string }>();
 
     const [categories, setCategories] = useState<Category[]>([]);
-    const [categoryName, setCategoryName] = useState<string>("");
+    const [categoryName, setCategoryName] = useState<string>();
     const [pageNo, setPageNo] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(6);
     const [totalPages, setTotalPages] = useState(1);
