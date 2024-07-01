@@ -1,47 +1,65 @@
+import { useEffect, useState } from "react";
+import { Product } from "../data/interface";
+import { useParams } from "react-router-dom";
+import ProductAPI from "../apis/product.api";
+
 const ProductView = () => {
+    const [product, setProduct] = useState<Product>();
+
+    const { id } = useParams<{ id?: string }>();
+
+    const [image, setImage] = useState<string>();
+
+    const [tab, setTab] = useState<string>("description");
+
+    const getProductById = async (id: string) => {
+        await ProductAPI.getProductById(id).then((res) => {
+            if (res.data) {
+                setProduct(res.data);
+                setImage(res.data.images[0].url);
+            }
+        });
+    };
+
+    useEffect(() => {
+        if (id) {
+            getProductById(id);
+        }
+    }, [id]);
     return (
         <div className="font-[sans-serif]">
-            <div className="p-6 lg:max-w-7xl max-w-2xl max-lg:mx-auto">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid items-start grid-cols-1 lg:grid-cols-2 gap-10">
                     <div className="w-full lg:sticky top-0 text-center">
                         <div className="lg:h-[600px]">
                             <img
-                                src="https://readymadeui.com/images/product6.webp"
-                                alt="Product"
+                                src={image}
+                                alt={product?.productName}
                                 className="lg:w-11/12 w-full h-full rounded-xl object-cover object-top"
                             />
                         </div>
                         <div className="flex flex-wrap gap-x-8 gap-y-6 justify-center mx-auto mt-6">
-                            <img
-                                src="https://readymadeui.com/images/product6.webp"
-                                alt="Product1"
-                                className="w-20 cursor-pointer rounded-xl outline"
-                            />
-                            <img
-                                src="https://readymadeui.com/images/product8.webp"
-                                alt="Product2"
-                                className="w-20 cursor-pointer rounded-xl"
-                            />
-                            <img
-                                src="https://readymadeui.com/images/product5.webp"
-                                alt="Product3"
-                                className="w-20 cursor-pointer rounded-xl"
-                            />
-                            <img
-                                src="https://readymadeui.com/images/product7.webp"
-                                alt="Product4"
-                                className="w-20 cursor-pointer rounded-xl"
-                            />
+                            {product?.images &&
+                                product?.images.length > 1 &&
+                                product?.images.map((image) => (
+                                    <img
+                                        key={image.id}
+                                        onClick={() => setImage(image.url)}
+                                        src={image.url}
+                                        alt={image.fileName}
+                                        className="w-20 cursor-pointer rounded-xl outline"
+                                    />
+                                ))}
                         </div>
                     </div>
                     <div>
                         <div className="flex flex-wrap items-start gap-4">
                             <div>
                                 <h2 className="text-2xl font-extrabold text-gray-800">
-                                    Adjective Attire | T-shirt
+                                    {product?.productName}
                                 </h2>
                                 <p className="text-sm text-gray-400 mt-2">
-                                    Well-Versed Commerce
+                                    {product?.productCategory?.categoryName}
                                 </p>
                             </div>
                             <div className="ml-auto flex flex-wrap gap-4">
@@ -103,12 +121,12 @@ const ProductView = () => {
                                 <p className="text-gray-800 text-3xl font-bold">
                                     $30
                                 </p>
-                                <p className="text-gray-400 text-xl mt-1">
+                                {/* <p className="text-gray-400 text-xl mt-1">
                                     <p>$42</p>{" "}
                                     <span className="text-sm ml-1">
                                         Tax included
                                     </span>
-                                </p>
+                                </p> */}
                             </div>
                             <div className="flex flex-wrap gap-4">
                                 <button
@@ -158,19 +176,19 @@ const ProductView = () => {
                                 Choose a Size
                             </h3>
                             <div className="flex flex-wrap gap-4 mt-4">
-                                <button
+                                {/* <button
                                     type="button"
                                     className="w-12 h-12 border-2 hover:border-gray-800 font-bold text-sm rounded-full flex items-center justify-center shrink-0"
                                 >
                                     SM
-                                </button>
+                                </button> */}
                                 <button
                                     type="button"
                                     className="w-12 h-12 border-2 hover:border-gray-800 border-gray-800 font-bold text-sm rounded-full flex items-center justify-center shrink-0"
                                 >
-                                    MD
+                                    {product?.size.name}
                                 </button>
-                                <button
+                                {/* <button
                                     type="button"
                                     className="w-12 h-12 border-2 hover:border-gray-800 font-bold text-sm rounded-full flex items-center justify-center shrink-0"
                                 >
@@ -181,7 +199,7 @@ const ProductView = () => {
                                     className="w-12 h-12 border-2 hover:border-gray-800 font-bold text-sm rounded-full flex items-center justify-center shrink-0"
                                 >
                                     XL
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                         <hr className="my-8" />
@@ -227,45 +245,87 @@ const ProductView = () => {
                 </div>
                 <div className="mt-24 max-w-4xl">
                     <ul className="flex border-b">
-                        <li className="text-gray-800 font-bold text-sm bg-gray-100 py-3 px-8 border-b-2 border-gray-800 cursor-pointer transition-all">
+                        <li
+                            onClick={() => setTab("description")}
+                            className="text-gray-800 font-bold text-sm bg-gray-100 py-3 px-8 border-b-2 border-gray-800 cursor-pointer transition-all"
+                        >
                             Description
                         </li>
-                        <li className="text-gray-400 font-bold text-sm hover:bg-gray-100 py-3 px-8 cursor-pointer transition-all">
+                        <li
+                            onClick={() => setTab("review")}
+                            className="text-gray-400 font-bold text-sm hover:bg-gray-100 py-3 px-8 cursor-pointer transition-all"
+                        >
                             Reviews
                         </li>
                     </ul>
-                    <div className="mt-8">
-                        <h3 className="text-lg font-bold text-gray-800">
-                            Product Description
-                        </h3>
-                        <p className="text-sm text-gray-400 mt-4">
-                            Elevate your casual style with our premium men's
-                            t-shirt. Crafted for comfort and designed with a
-                            modern fit, this versatile shirt is an essential
-                            addition to your wardrobe. The soft and breathable
-                            fabric ensures all-day comfort, making it perfect
-                            for everyday wear. Its classic crew neck and short
-                            sleeves offer a timeless look.
-                        </p>
-                    </div>
-                    <ul className="space-y-3 list-disc mt-6 pl-4 text-sm text-gray-400">
-                        <li>
-                            A gray t-shirt is a wardrobe essential because it is
-                            so versatile.
-                        </li>
-                        <li>
-                            Available in a wide range of sizes, from extra small
-                            to extra large, and even in tall and petite sizes.
-                        </li>
-                        <li>
-                            This is easy to care for. They can usually be
-                            machine-washed and dried on low heat.
-                        </li>
-                        <li>
-                            You can add your own designs, paintings, or
-                            embroidery to make it your own.
-                        </li>
-                    </ul>
+                    {tab === "description" ? (
+                        <>
+                            <div className="mt-8">
+                                <h3 className="text-lg font-bold text-gray-800">
+                                    Product Description
+                                </h3>
+                                <p className="text-sm text-gray-400 mt-4">
+                                    {product?.description}
+                                </p>
+                            </div>
+                            {/* <ul className="space-y-3 list-disc mt-6 pl-4 text-sm text-gray-400">
+                                <li>
+                                    A gray t-shirt is a wardrobe essential
+                                    because it is so versatile.
+                                </li>
+                                <li>
+                                    Available in a wide range of sizes, from
+                                    extra small to extra large, and even in tall
+                                    and petite sizes.
+                                </li>
+                                <li>
+                                    This is easy to care for. They can usually
+                                    be machine-washed and dried on low heat.
+                                </li>
+                                <li>
+                                    You can add your own designs, paintings, or
+                                    embroidery to make it your own.
+                                </li>
+                            </ul> */}
+                        </>
+                    ) : (
+                        <>
+                            <div className="mt-8">
+                                <h3 className="text-lg font-bold text-gray-800">
+                                    Product Review
+                                </h3>
+                                <p className="text-sm text-gray-400 mt-4">
+                                    Elevate your casual style with our premium
+                                    men's t-shirt. Crafted for comfort and
+                                    designed with a modern fit, this versatile
+                                    shirt is an essential addition to your
+                                    wardrobe. The soft and breathable fabric
+                                    ensures all-day comfort, making it perfect
+                                    for everyday wear. Its classic crew neck and
+                                    short sleeves offer a timeless look.
+                                </p>
+                            </div>
+                            <ul className="space-y-3 list-disc mt-6 pl-4 text-sm text-gray-400">
+                                <li>
+                                    A gray t-shirt is a wardrobe essential
+                                    because it is so versatile.
+                                </li>
+                                <li>
+                                    Available in a wide range of sizes, from
+                                    extra small to extra large, and even in tall
+                                    and petite sizes.
+                                </li>
+                                <li>
+                                    This is easy to care for. They can usually
+                                    be machine-washed and dried on low heat.
+                                </li>
+                                <li>
+                                    You can add your own designs, paintings, or
+                                    embroidery to make it your own.
+                                </li>
+                            </ul>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

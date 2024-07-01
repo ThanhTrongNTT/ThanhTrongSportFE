@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
+import { PageResponse, Product } from "../data/interface";
 import AxiosClient from "./axiosClient/AxiosClient";
-import { PageResponse, Product, SearchParams } from "../data/interface";
 
 const ProductAPI = {
     getAllProducts: (

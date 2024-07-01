@@ -31,7 +31,7 @@ export interface Product {
     price: number;
     size: Size;
     quantity: number;
-    category: Category;
+    productCategory: Category;
     images: MediaFile[];
     removalFlag: boolean;
 }

@@ -13,13 +13,13 @@ import {
     PlusIcon,
     Squares2X2Icon,
 } from "@heroicons/react/20/solid";
+import { Pagination } from "flowbite-react";
 import { useEffect, useState } from "react";
 import CategoryAPI from "../apis/category.api";
 import ProductAPI from "../apis/product.api";
 import ProductCard from "../component/card/ProductCard";
 import { Category, Product } from "../data/interface";
-import { Pagination } from "flowbite-react";
-import { set } from "react-hook-form";
+import { useParams } from "react-router-dom";
 
 let sortOptions = [
     { name: "Most Popular", sortBy: "#", sortDir: "asc", current: false },
@@ -83,13 +83,12 @@ function classNames(...classes: any) {
 
 const ProductPage = () => {
     const [products, setProducts] = useState<Product[]>([]);
-    console.log("🚀 ~ ProductPage ~ products:", products);
+    const { keyword } = useParams<{ keyword?: string }>();
 
     const [categories, setCategories] = useState<Category[]>([]);
     const [categoryName, setCategoryName] = useState<string>("");
-    const [keyWord, setKeyWord] = useState<string>("");
     const [pageNo, setPageNo] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(3);
+    const [pageSize, setPageSize] = useState<number>(6);
     const [totalPages, setTotalPages] = useState(1);
     const [sortBy, setSortBy] = useState<string>("createdDate");
     const [sortDir, setSortDir] = useState<string>("asc");
@@ -113,7 +112,7 @@ const ProductPage = () => {
     const searchProduct = async () => {
         await ProductAPI.searchProduct(
             categoryName,
-            keyWord,
+            keyword,
             pageNo - 1,
             pageSize,
             sortBy,
@@ -128,7 +127,7 @@ const ProductPage = () => {
 
     useEffect(() => {
         searchProduct();
-    }, [categoryName, keyWord, pageNo, pageSize, sortBy, sortDir]);
+    }, [categoryName, keyword, pageNo, pageSize, sortBy, sortDir]);
 
     // useEffect(() => {
     //     getProductsByCategory();
@@ -318,11 +317,11 @@ const ProductPage = () => {
                                         <p className="text-sm text-gray-700">
                                             Showing{" "}
                                             <span className="font-medium">
-                                                {pageNo * pageSize + 1}
+                                                {(pageNo - 1) * pageSize + 1}
                                             </span>{" "}
                                             to{" "}
                                             <span className="font-medium">
-                                                {(pageNo + 1) * pageSize}
+                                                {pageNo * pageSize}
                                             </span>{" "}
                                             of{" "}
                                             <span className="font-medium">

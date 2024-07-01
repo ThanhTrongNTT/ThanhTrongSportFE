@@ -4,12 +4,15 @@ import { RootState, useAppSelector } from "../../redux/store";
 import Avt from "../avt/Avt";
 import { IconArrowDown } from "../icon/Icon";
 import Menu from "../menu/Menu";
+import { useState } from "react";
 
 const Header = () => {
     const { userInfo } = useAppSelector((state: RootState) => state.user);
     const location = useLocation();
     const navigate = useNavigate();
     const isLogin = sessionStorage.getItem("isLogin") === "true";
+    const [show, setShow] = useState<boolean>(false);
+    const [keyword, setKeyword] = useState<string>();
 
     const navItems = [
         {
@@ -29,6 +32,14 @@ const Header = () => {
             path: "/support",
         },
     ];
+
+    const handleSearch = () => {
+        if (keyword) {
+            navigate(`/product/${keyword}`);
+        } else {
+            setShow(!show);
+        }
+    };
 
     return (
         <div className="bg-white sticky top-0 z-50">
@@ -127,9 +138,7 @@ const Header = () => {
                                                 aria-hidden="true"
                                             ></span>
                                             <div
-                                                onClick={() =>
-                                                    navigate("/signup")
-                                                }
+                                                onClick={handleSearch}
                                                 className="text-sm font-medium text-gray-700 hover:text-gray-800 cursor-pointer"
                                             >
                                                 Create account
@@ -149,6 +158,19 @@ const Header = () => {
                                         </span>
                                     </div>
                                 </div>
+                                {!show && (
+                                    <div className="lg:ml-8">
+                                        <div className="flex items-center text-gray-700 hover:text-gray-800">
+                                            <input
+                                                type="text"
+                                                id="keyword"
+                                                onChange={(e) =>
+                                                    setKeyword(e.target.value)
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                )}
                                 <div className="flex lg:ml-6">
                                     <div className="p-2 text-gray-400 hover:text-gray-500 cursor-pointer">
                                         <svg

@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Product } from "../../data/interface";
 import ImageCustom from "../image/ImageCustom";
 
@@ -6,8 +7,13 @@ type ProductCardProps = {
 };
 
 const ProductCard = ({ product }: ProductCardProps) => {
+    const navigate = useNavigate();
+
     return (
-        <div className="bg-white rounded-md overflow-hidden shadow-md cursor-pointer hover:scale-[1.02] transition-all">
+        <div
+            onClick={() => navigate(`/product/detail/${product.id}`)}
+            className="bg-white rounded-md overflow-hidden shadow-md cursor-pointer hover:scale-[1.02] transition-all"
+        >
             <div className="w-full aspect-w-16 aspect-h-8 lg:h-80">
                 <ImageCustom
                     className="object-cover"
