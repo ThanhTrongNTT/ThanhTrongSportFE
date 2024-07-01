@@ -12,20 +12,15 @@ const ProductAPI = {
         const url = `products?pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}`;
         return AxiosClient.get(url);
     },
-    searchProductByName: (
-        searchParam: SearchParams,
-    ): Promise<PageResponse<Product>> => {
-        const url = `products/search-by-name?keyword=${searchParam.keyWord}&pageNo=${searchParam.pageNo}&pageSize=${searchParam.pageSize}&sortBy=${searchParam.sortBy}&sortDir=${searchParam.sortDir}`;
-        return AxiosClient.get(url);
-    },
-    searchProductByCategory: (
+    searchProduct: (
         categoryName: string,
+        keyWord: string,
         pageNo: number,
         pageSize: number,
         sortBy: string,
         sortDir: string,
     ): Promise<PageResponse<Product>> => {
-        const url = `products/search-by-category?categoryName=${categoryName}&pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}`;
+        const url = `products/search-products?keyword=${keyWord}&categoryName=${categoryName}&pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}`;
         return AxiosClient.get(url);
     },
     searchProductByPrice: (

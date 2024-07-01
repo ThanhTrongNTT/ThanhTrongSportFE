@@ -87,6 +87,7 @@ const ProductPage = () => {
 
     const [categories, setCategories] = useState<Category[]>([]);
     const [categoryName, setCategoryName] = useState<string>("");
+    const [keyWord, setKeyWord] = useState<string>("");
     const [pageNo, setPageNo] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(3);
     const [totalPages, setTotalPages] = useState(1);
@@ -109,23 +110,10 @@ const ProductPage = () => {
         getCategories();
     }, []);
 
-    const getProductsByCategory = async () => {
-        await ProductAPI.searchProductByCategory(
+    const searchProduct = async () => {
+        await ProductAPI.searchProduct(
             categoryName,
-            pageNo - 1,
-            pageSize,
-            sortBy,
-            sortDir,
-        ).then((res) => {
-            if (res.data) {
-                setProducts(res.data.content);
-                setTotalPages(res.data.totalPages);
-            }
-        });
-    };
-
-    const getAllProducts = async () => {
-        await ProductAPI.getAllProducts(
+            keyWord,
             pageNo - 1,
             pageSize,
             sortBy,
@@ -139,8 +127,8 @@ const ProductPage = () => {
     };
 
     useEffect(() => {
-        getAllProducts();
-    }, [pageNo, pageSize, sortBy, sortDir]);
+        searchProduct();
+    }, [categoryName, keyWord, pageNo, pageSize, sortBy, sortDir]);
 
     // useEffect(() => {
     //     getProductsByCategory();
