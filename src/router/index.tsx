@@ -26,6 +26,7 @@ const DeclareRouter = () => {
             <Route element={<LayoutDefault />}>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/product/:keyword" element={<ProductPage />} />
+                <Route path="/product" element={<ProductPage />} />
                 <Route path="/product/detail/:id" element={<ProductView />} />
                 <Route path="/cart" element={<ShopCart />} />
                 <Route path="/about" element={<AboutPage />} />
