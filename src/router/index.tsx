@@ -13,6 +13,7 @@ import ProductPage from "../screens/ProductPage.tsx";
 import ProductView from "../screens/ProductView.tsx";
 import ProfilePage from "../screens/ProfilePage.tsx";
 import ShopCart from "../screens/ShopCart.tsx";
+import MemberProfileLayout from "../layout/MemberProfileLayout .tsx";
 
 const DeclareRouter = () => {
     return (
@@ -27,9 +28,11 @@ const DeclareRouter = () => {
                 <Route path="/product" element={<ProductPage />} />
                 <Route path="/product/detail" element={<ProductView />} />
                 <Route path="/cart" element={<ShopCart />} />
-                <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/orderhistory" element={<OrderHistory />} />
+            </Route>
+            <Route path="/profile" element={<MemberProfileLayout />}>
+                <Route path="" element={<ProfilePage />} />
             </Route>
             <Route path="/order" element={<CheckoutPage />} />
             <Route path="*" element={<NotFound />} />

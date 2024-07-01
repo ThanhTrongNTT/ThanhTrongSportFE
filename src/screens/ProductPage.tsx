@@ -1,12 +1,4 @@
-import { useEffect, useState } from "react";
-import ProductAPI from "../apis/product.api";
-import ProductCard from "../component/card/ProductCard";
-import MenuCategory from "../component/menuCategory/MenuCategory";
-import { Category, Product } from "../data/interface";
 import {
-    Dialog,
-    DialogBackdrop,
-    DialogPanel,
     Disclosure,
     DisclosureButton,
     DisclosurePanel,
@@ -16,18 +8,18 @@ import {
     MenuItems,
 } from "@headlessui/react";
 import {
-    ChevronLeftIcon,
-    ChevronRightIcon,
-    XMarkIcon,
-} from "@heroicons/react/24/outline";
-import {
     ChevronDownIcon,
-    FunnelIcon,
     MinusIcon,
     PlusIcon,
     Squares2X2Icon,
 } from "@heroicons/react/20/solid";
+import { useEffect, useState } from "react";
 import CategoryAPI from "../apis/category.api";
+import ProductAPI from "../apis/product.api";
+import ProductCard from "../component/card/ProductCard";
+import { Category, Product } from "../data/interface";
+import { Pagination } from "flowbite-react";
+import { set } from "react-hook-form";
 
 let sortOptions = [
     { name: "Most Popular", sortBy: "#", sortDir: "asc", current: false },
@@ -95,8 +87,9 @@ const ProductPage = () => {
 
     const [categories, setCategories] = useState<Category[]>([]);
     const [categoryName, setCategoryName] = useState<string>("");
-    const [pageNo, setPageNo] = useState<number>(0);
-    const [pageSize, setPageSize] = useState<number>(5);
+    const [pageNo, setPageNo] = useState<number>(1);
+    const [pageSize, setPageSize] = useState<number>(3);
+    const [totalPages, setTotalPages] = useState(1);
     const [sortBy, setSortBy] = useState<string>("createdDate");
     const [sortDir, setSortDir] = useState<string>("asc");
 
@@ -108,6 +101,10 @@ const ProductPage = () => {
         });
     };
 
+    const onPageChange = (page: number) => {
+        setPageNo(page);
+    };
+
     useEffect(() => {
         getCategories();
     }, []);
@@ -115,20 +112,39 @@ const ProductPage = () => {
     const getProductsByCategory = async () => {
         await ProductAPI.searchProductByCategory(
             categoryName,
-            pageNo,
+            pageNo - 1,
             pageSize,
             sortBy,
             sortDir,
         ).then((res) => {
             if (res.data) {
                 setProducts(res.data.content);
+                setTotalPages(res.data.totalPages);
+            }
+        });
+    };
+
+    const getAllProducts = async () => {
+        await ProductAPI.getAllProducts(
+            pageNo - 1,
+            pageSize,
+            sortBy,
+            sortDir,
+        ).then((res) => {
+            if (res.data) {
+                setProducts(res.data.content);
+                setTotalPages(res.data.totalPages);
             }
         });
     };
 
     useEffect(() => {
-        getProductsByCategory();
-    }, [categoryName, pageNo, pageSize, sortBy, sortDir]);
+        getAllProducts();
+    }, [pageNo, pageSize, sortBy, sortDir]);
+
+    // useEffect(() => {
+    //     getProductsByCategory();
+    // }, [categoryName]);
 
     return (
         <div className="bg-white">
@@ -328,76 +344,13 @@ const ProductPage = () => {
                                         </p>
                                     </div>
                                     <div>
-                                        <nav
-                                            className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-                                            aria-label="Pagination"
-                                        >
-                                            <a
-                                                href="#"
-                                                className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                                            >
-                                                <span className="sr-only">
-                                                    Previous
-                                                </span>
-                                                <ChevronLeftIcon
-                                                    className="h-5 w-5"
-                                                    aria-hidden="true"
-                                                />
-                                            </a>
-                                            {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
-                                            <a
-                                                href="#"
-                                                aria-current="page"
-                                                className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                            >
-                                                1
-                                            </a>
-                                            <a
-                                                href="#"
-                                                className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                                            >
-                                                2
-                                            </a>
-                                            <a
-                                                href="#"
-                                                className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
-                                            >
-                                                3
-                                            </a>
-                                            <span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">
-                                                ...
-                                            </span>
-                                            <a
-                                                href="#"
-                                                className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
-                                            >
-                                                8
-                                            </a>
-                                            <a
-                                                href="#"
-                                                className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                                            >
-                                                9
-                                            </a>
-                                            <a
-                                                href="#"
-                                                className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                                            >
-                                                10
-                                            </a>
-                                            <a
-                                                href="#"
-                                                className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                                            >
-                                                <span className="sr-only">
-                                                    Next
-                                                </span>
-                                                <ChevronRightIcon
-                                                    className="h-5 w-5"
-                                                    aria-hidden="true"
-                                                />
-                                            </a>
-                                        </nav>
+                                        <Pagination
+                                            showIcons={true}
+                                            layout="pagination"
+                                            currentPage={pageNo}
+                                            totalPages={totalPages}
+                                            onPageChange={onPageChange}
+                                        />
                                     </div>
                                 </div>
                             </div>

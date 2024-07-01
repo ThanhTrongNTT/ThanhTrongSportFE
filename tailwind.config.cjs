@@ -1,8 +1,11 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires, no-undef
+const flowbite = require("flowbite-react/tailwind");
+
 /** @type {import('tailwindcss').Config} */
 const withMT = require("@material-tailwind/react/utils/withMT");
 
 module.exports = withMT({
-    content: ["./src/**/*.{html,tsx,jsx,js,ts}"],
+    content: ["./src/**/*.{html,tsx,jsx,js,ts}", flowbite.content()],
     theme: {
         extend: {
             colors: {
@@ -34,6 +37,7 @@ module.exports = withMT({
         },
     },
     plugins: [
+        flowbite.plugin(),
         require("@tailwindcss/forms")({
             strategy: "class",
         }),

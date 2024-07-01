@@ -10,6 +10,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="bg-white rounded-md overflow-hidden shadow-md cursor-pointer hover:scale-[1.02] transition-all">
             <div className="w-full aspect-w-16 aspect-h-8 lg:h-80">
                 <ImageCustom
+                    className="object-cover"
                     src={
                         product.images.length > 0
                             ? product.images[0].url
@@ -23,13 +24,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     <div>UNISEX</div>
                     {/* <div className="grid justify-items-end">XS-XXL</div> */}
                 </div>
-                <h3 className="text-lg font-bold text-gray-800">
+                <h3 className="text-lg font-bold text-gray-800 h-14">
                     {product.productName}
                 </h3>
-                <h1>{product.description}</h1>
+                <h1 className="h-12">{product.description}</h1>
                 <div className="mt-4 flex items-center flex-wrap gap-2">
                     <h3 className="text-2xl text-gray-700">
-                        {product.price} VND
+                        {product.price.toLocaleString("it-IT", {
+                            style: "currency",
+                            currency: "VND",
+                        })}{" "}
                     </h3>
                     <div className="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer ml-auto">
                         <svg

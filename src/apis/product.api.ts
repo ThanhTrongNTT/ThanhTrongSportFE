@@ -8,13 +8,13 @@ const ProductAPI = {
         pageSize: number,
         sortBy: string,
         sortDir: string,
-    ): Promise<AxiosResponse<PageResponse<Product>>> => {
+    ): Promise<PageResponse<Product>> => {
         const url = `products?pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}`;
         return AxiosClient.get(url);
     },
     searchProductByName: (
         searchParam: SearchParams,
-    ): Promise<AxiosResponse<PageResponse<Product>>> => {
+    ): Promise<PageResponse<Product>> => {
         const url = `products/search-by-name?keyword=${searchParam.keyWord}&pageNo=${searchParam.pageNo}&pageSize=${searchParam.pageSize}&sortBy=${searchParam.sortBy}&sortDir=${searchParam.sortDir}`;
         return AxiosClient.get(url);
     },

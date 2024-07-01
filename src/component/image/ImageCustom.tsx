@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 type ImageCustomProps = {
     src: string;
     alt: string;
     rounded?: boolean;
+    className?: string;
 };
 
 const ImageCustom = (props: ImageCustomProps) => {
@@ -20,7 +21,11 @@ const ImageCustom = (props: ImageCustomProps) => {
             <img
                 src={props.src}
                 alt={props.alt}
-                className={`h-full w-full object-cover ${rounded}`}
+                className={
+                    props.className
+                        ? props.className
+                        : `h-full w-full object-cover ${rounded}`
+                }
                 onLoad={() => setLoaded(true)}
             />
         </div>
