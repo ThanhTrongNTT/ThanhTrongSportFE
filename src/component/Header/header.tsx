@@ -59,7 +59,7 @@ const Header = () => {
                                         <button
                                             key={item.name}
                                             onClick={() => navigate(item.path)}
-                                            className={` text-gray-700 hover:text-gray-800 relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition-colors duration-200 ease-out cursor-pointer ${item.path === location.pathname ? "border-indigo-600 text-indigo-600" : "border-transparent"}`}
+                                            className={` text-gray-700 hover:text-gray-800 relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition-colors duration-200 ease-out cursor-pointer ${item.path === location.pathname || (location.pathname.startsWith("/product") && item.path === "/product") ? "border-indigo-600 text-indigo-600" : "border-transparent"}`}
                                         >
                                             {item.name}
                                         </button>
@@ -146,7 +146,7 @@ const Header = () => {
                                         </span>
                                     </div>
                                 </div>
-                                <div className="lg:ml-8">
+                                <div className="lg:ml-8 flex items-center border border-gray-300 rounded-xl">
                                     <div className="flex items-center text-gray-700 hover:text-gray-800">
                                         <input
                                             type="text"
@@ -154,30 +154,31 @@ const Header = () => {
                                             onChange={(e) =>
                                                 setKeyword(e.target.value)
                                             }
+                                            className="outline-none border-none focus:shadow-none bg-transparent"
                                         />
                                     </div>
-                                </div>
-                                <div className="flex">
-                                    <div
-                                        onClick={() =>
-                                            navigate(`/product/${keyword}`)
-                                        }
-                                        className="p-2 text-gray-400 hover:text-gray-500 cursor-pointer"
-                                    >
-                                        <svg
-                                            className="h-6 w-6"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth="1.5"
-                                            stroke="currentColor"
-                                            aria-hidden="true"
+                                    <div className="flex">
+                                        <div
+                                            onClick={() =>
+                                                navigate(`/product/${keyword}`)
+                                            }
+                                            className="p-2 text-gray-400 hover:text-gray-500 cursor-pointer"
                                         >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                                            />
-                                        </svg>
+                                            <svg
+                                                className="h-6 w-6"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth="1.5"
+                                                stroke="currentColor"
+                                                aria-hidden="true"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                                                />
+                                            </svg>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="ml-4 flow-root lg:ml-6">
@@ -189,6 +190,7 @@ const Header = () => {
                                             strokeWidth="1.5"
                                             stroke="currentColor"
                                             aria-hidden="true"
+                                            onClick={() => navigate("/cart")}
                                         >
                                             <path
                                                 strokeLinecap="round"

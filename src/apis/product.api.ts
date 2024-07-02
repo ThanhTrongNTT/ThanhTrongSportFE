@@ -21,7 +21,7 @@ const ProductAPI = {
         sortDir: string,
     ): Promise<PageResponse<Product>> => {
         let url = `products/search-products?pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}`;
-        if (keyWord) url += `&keyword=${keyWord}`;
+        if (keyWord) url += `&keyWord=${keyWord}`;
         if (categoryName) url += `&categoryName=${categoryName}`;
         return AxiosClient.get(url);
     },
