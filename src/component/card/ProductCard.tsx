@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Product } from "../../data/interface";
 import ImageCustom from "../image/ImageCustom";
+import CartAPI from "../../apis/cart.api";
+import { RootState, useAppSelector } from "../../redux/store";
 
 type ProductCardProps = {
     product: Product;
@@ -8,6 +10,19 @@ type ProductCardProps = {
 
 const ProductCard = ({ product }: ProductCardProps) => {
     const navigate = useNavigate();
+    const { userInfo } = useAppSelector((state: RootState) => state.user);
+
+    const addToCart = async () => {
+        if (userInfo.email === "") navigate("/login");
+        else
+            await CartAPI.addToCart(userInfo.email, {
+                product,
+                quantity: 1,
+            }).then((res) => {
+                if (res.data) {
+                }
+            });
+    };
 
     return (
         <div className="relative flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
@@ -100,7 +115,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
                         </span>
                     </div>
                 </div>
-                <button className="flex items-center justify-center rounded-md bg-gray-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-blue-300 w-full">
+                <button
+                    onClick={addToCart}
+                    className="flex items-center justify-center rounded-md bg-gray-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-blue-300 w-full"
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="mr-2 h-6 w-6"

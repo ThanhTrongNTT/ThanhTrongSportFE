@@ -56,7 +56,7 @@ export interface CartDetail {
     id?: string;
     product: Product;
     quantity: number;
-    removalFlag: boolean;
+    removalFlag?: boolean;
 }
 export interface Cart {
     id?: string;

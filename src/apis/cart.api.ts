@@ -1,8 +1,8 @@
-import { Cart } from "../data/interface";
+import { Cart, CartDetail } from "../data/interface";
 import AxiosClient from "./axiosClient/AxiosClient";
 
 const CartAPI = {
-    addToCart: (email: string, cart: Cart) => {
+    addToCart: (email: string, cart: CartDetail) => {
         // Add product to cart
         const url = `cart/${email}/add`;
         return AxiosClient.post(url, cart);
