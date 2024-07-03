@@ -14,6 +14,9 @@ import ProductView from "../screens/ProductView.tsx";
 import ProfilePage from "../screens/ProfilePage.tsx";
 import ShopCart from "../screens/ShopCart.tsx";
 import MemberProfileLayout from "../layout/MemberProfileLayout .tsx";
+import EditProfile from "../screens/Profile/EditProfile.tsx";
+import OrderHistoryProfile from "../screens/Profile/OrderHistoryProfile.tsx";
+import ChangePassword from "../screens/Profile/ChangePassword.tsx";
 
 const DeclareRouter = () => {
     return (
@@ -34,6 +37,9 @@ const DeclareRouter = () => {
             </Route>
             <Route path="/profile" element={<MemberProfileLayout />}>
                 <Route path="" element={<ProfilePage />} />
+                <Route path="edit-profile" element={<EditProfile />} />
+                <Route path="order-history" element={<OrderHistoryProfile />} />
+                <Route path="change-password" element={<ChangePassword />} />
             </Route>
             <Route path="/order" element={<CheckoutPage />} />
             <Route path="*" element={<NotFound />} />

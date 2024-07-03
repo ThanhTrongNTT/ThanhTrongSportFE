@@ -13,6 +13,7 @@ type Option = {
     value: string;
     label: string;
     checked: boolean;
+    path: string;
 };
 const MemberProfileLayout = () => {
     const [filters, setFilters] = useState([
@@ -20,11 +21,12 @@ const MemberProfileLayout = () => {
             id: "personal-info",
             name: "Personal Info",
             options: [
-                { value: "view", label: "Profile", checked: true },
+                { value: "view", label: "Profile", checked: true, path: "" },
                 {
                     value: "order-history",
                     label: "Order History",
                     checked: false,
+                    path: "order-history",
                 },
             ],
         },
@@ -32,11 +34,17 @@ const MemberProfileLayout = () => {
             id: "edit-personal-info",
             name: "Edit Personal Info",
             options: [
-                { value: "edit", label: "Edit Profile", checked: false },
+                {
+                    value: "edit",
+                    label: "Edit Profile",
+                    checked: false,
+                    path: "edit-profile",
+                },
                 {
                     value: "change-password",
                     label: "Change Password",
                     checked: false,
+                    path: "change-password",
                 },
             ],
         },
@@ -101,8 +109,10 @@ const MemberProfileLayout = () => {
                                                                 }
                                                                 className="flex items-center"
                                                             >
-                                                                <label
-                                                                    htmlFor={`filter-${section.id}-${optionIdx}`}
+                                                                <Link
+                                                                    to={
+                                                                        option.path
+                                                                    }
                                                                     className={classNames(
                                                                         "ml-3 text-sm text-gray-600 cursor-pointer",
                                                                         option.checked
@@ -119,7 +129,7 @@ const MemberProfileLayout = () => {
                                                                     {
                                                                         option.label
                                                                     }
-                                                                </label>
+                                                                </Link>
                                                             </div>
                                                         ),
                                                     )}

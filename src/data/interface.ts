@@ -13,6 +13,7 @@ export interface UserProfile {
     firstName: string;
     lastName: string;
     avatar: MediaFile;
+    birthDate: string;
     removalFlag: boolean;
 }
 
