@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { User } from "../../data/interface";
+import { CartDetail, User } from "../../data/interface";
 
 export interface UserState {
     accessToken: string;
@@ -7,6 +7,7 @@ export interface UserState {
     userInfo: User;
     error: string;
     message: string;
+    carts: CartDetail[];
 }
 const accessToken = sessionStorage.getItem("accessToken");
 const refreshToken = sessionStorage.getItem("refreshToken");
@@ -31,11 +32,13 @@ const initialState: UserState = {
                 url: "",
                 removalFlag: false,
             },
+            birthDate: "",
             removalFlag: false,
         },
     },
     error: "",
     message: "",
+    carts: [],
 };
 
 const userSlice = createSlice({
@@ -62,10 +65,20 @@ const userSlice = createSlice({
             state.userInfo = initialState.userInfo;
             state.message = "";
             state.error = "";
+            state.carts = [];
+        },
+        setCarts: (state, action) => {
+            state.carts = action.payload;
         },
     },
 });
 
-export const { clearUser, updateToken, update, setMessage, resetUserState } =
-    userSlice.actions;
+export const {
+    clearUser,
+    updateToken,
+    update,
+    setMessage,
+    resetUserState,
+    setCarts,
+} = userSlice.actions;
 export default userSlice.reducer;

@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { Product } from "../../data/interface";
-import ImageCustom from "../image/ImageCustom";
+import { toast } from "react-toastify";
 import CartAPI from "../../apis/cart.api";
-import { RootState, useAppSelector } from "../../redux/store";
+import { CartDetail, Product } from "../../data/interface";
+import { setCarts } from "../../redux/slices/userSlice";
+import { RootState, useAppDispatch, useAppSelector } from "../../redux/store";
+import ImageCustom from "../image/ImageCustom";
 
 type ProductCardProps = {
     product: Product;
@@ -10,6 +12,7 @@ type ProductCardProps = {
 
 const ProductCard = ({ product }: ProductCardProps) => {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const { userInfo } = useAppSelector((state: RootState) => state.user);
 
     const addToCart = async () => {
@@ -18,11 +21,46 @@ const ProductCard = ({ product }: ProductCardProps) => {
             await CartAPI.addToCart(userInfo.email, {
                 product,
                 quantity: 1,
-            }).then((res) => {
-                if (res.data) {
-                }
-            });
+            })
+                .then(async (res) => {
+                    if (res.data) {
+                        toast.success("Add To Cart Success!", {
+                            autoClose: 500,
+                            delay: 10,
+                            draggable: true,
+                            pauseOnHover: false,
+                        });
+                        await CartAPI.getCartByUser(userInfo.email)
+                            .then((res) => {
+                                if (res.data) {
+                                    const carts: CartDetail[] =
+                                        res.data.cartDetails || [];
+                                    dispatch(setCarts(carts));
+                                }
+                            })
+                            .catch((err) => {
+                                toast.error(err.message, {
+                                    autoClose: 500,
+                                    delay: 10,
+                                    draggable: true,
+                                    pauseOnHover: false,
+                                });
+                            });
+                    }
+                })
+                .catch((err) => {
+                    toast.error(err.message, {
+                        autoClose: 500,
+                        delay: 10,
+                        draggable: true,
+                        pauseOnHover: false,
+                    });
+                });
     };
+
+    function getRandomFloat(min: number, max: number) {
+        return Math.random() * (max - min) + min;
+    }
 
     return (
         <div className="relative flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
@@ -39,9 +77,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     }
                     alt={product.productName}
                 />
-                <span className="absolute top-0 left-0 m-2 rounded-full bg-black px-2 text-center text-sm font-medium text-white">
+                {/* <span className="absolute top-0 left-0 m-2 rounded-full bg-black px-2 text-center text-sm font-medium text-white">
                     39% OFF
-                </span>
+                </span> */}
             </div>
             <div className="mt-4 px-5 pb-5 flex flex-col justify-between">
                 <h5
@@ -53,14 +91,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 <div className="mt-2 flex items-center justify-between">
                     <p>
                         <span className="text-3xl font-bold text-slate-900">
-                            {product.price.toLocaleString("it-IT", {
+                            {product.price.toLocaleString("en", {
                                 style: "currency",
-                                currency: "VND",
+                                currency: "USD",
                             })}
                         </span>
-                        <span className="text-sm text-slate-900 line-through">
+                        {/* <span className="text-sm text-slate-900 line-through">
                             $699
-                        </span>
+                        </span> */}
                     </p>
                 </div>
                 <div className="mt-2 mb-5 flex items-center justify-between">
@@ -111,7 +149,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                         </svg>
                         <span className="mr-2 ml-3 rounded bg-yellow-200 px-2.5 py-0.5 text-xs font-semibold">
-                            5.0
+                            {getRandomFloat(4, 5).toFixed(1)}
                         </span>
                     </div>
                 </div>

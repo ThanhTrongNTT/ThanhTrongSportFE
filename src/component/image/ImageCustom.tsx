@@ -10,7 +10,7 @@ const ImageCustom = (props: ImageCustomProps) => {
     const [loaded, setLoaded] = useState(false);
     const rounded = props.rounded ? "rounded-xl border border-gray-300" : "";
     return (
-        <div>
+        <div className="w-full h-full">
             {loaded ? null : (
                 <div className="h-full flex justify-center items-center content-center">
                     <div

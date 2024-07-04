@@ -321,7 +321,10 @@ const ProductPage = () => {
                                             </span>{" "}
                                             to{" "}
                                             <span className="font-medium">
-                                                {pageNo * pageSize}
+                                                {products.length <
+                                                pageNo * pageSize
+                                                    ? products.length
+                                                    : pageNo * pageSize}
                                             </span>{" "}
                                             of{" "}
                                             <span className="font-medium">

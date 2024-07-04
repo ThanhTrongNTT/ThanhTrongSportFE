@@ -96,7 +96,7 @@ export const IconSigout = () => {
 export const IconArrowDown = () => {
     return (
         <svg
-            className="ml-auto mr-10"
+            className="ml-auto"
             width="16"
             height="17"
             viewBox="0 0 16 17"

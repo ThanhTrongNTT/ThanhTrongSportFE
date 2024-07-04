@@ -7,7 +7,10 @@ import Menu from "../menu/Menu";
 import { useState } from "react";
 
 const Header = () => {
-    const { userInfo } = useAppSelector((state: RootState) => state.user);
+    const { userInfo, carts } = useAppSelector(
+        (state: RootState) => state.user,
+    );
+
     const location = useLocation();
     const navigate = useNavigate();
     const isLogin = sessionStorage.getItem("isLogin") === "true";
@@ -36,7 +39,7 @@ const Header = () => {
         <div className="bg-white sticky top-0 z-50">
             <header className="relative bg-white">
                 <p className="flex h-10 items-center justify-center bg-indigo-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
-                    Get free delivery on orders over $100
+                    Welcome to Sport Shop! How can I help you?
                 </p>
                 <nav
                     aria-label="Top"
@@ -128,13 +131,18 @@ const Header = () => {
                                                 className="h-6 w-px bg-gray-200"
                                                 aria-hidden="true"
                                             ></span>
-                                            <div className="text-sm font-medium text-gray-700 hover:text-gray-800 cursor-pointer">
+                                            <div
+                                                onClick={() =>
+                                                    navigate("/signup")
+                                                }
+                                                className="text-sm font-medium text-gray-700 hover:text-gray-800 cursor-pointer pr-3"
+                                            >
                                                 Create account
                                             </div>
                                         </>
                                     )}
                                 </div>
-                                <div className="hidden lg:ml-8 lg:flex">
+                                <div className="hidden lg:flex">
                                     <div className="flex items-center text-gray-700 hover:text-gray-800">
                                         <img
                                             src="Logo/icon_VN.png"
@@ -199,7 +207,7 @@ const Header = () => {
                                             />
                                         </svg>
                                         <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                                            0
+                                            {carts.length}
                                         </span>
                                     </div>
                                 </div>

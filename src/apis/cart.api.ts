@@ -9,7 +9,7 @@ const CartAPI = {
     },
     getCartByUser: (email: string) => {
         // Get cart by user
-        const url = `cart/${email}`;
+        const url = `carts/${email}`;
         return AxiosClient.get(url);
     },
     updateCart: (email: string, cart: Cart) => {
@@ -21,6 +21,10 @@ const CartAPI = {
         // Add cart guest
         const url = `cart/add`;
         return AxiosClient.post(url, cart);
+    },
+    removeFromCart(email: string, id: string) {
+        const url = `cart/${email}/remove`;
+        return AxiosClient.post(url, { id });
     },
 };
 

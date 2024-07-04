@@ -1,22 +1,22 @@
-import { Link, useNavigate } from "react-router-dom";
-import AuthAPI from "../apis/authentication.api";
-import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
-import { toast } from "react-toastify";
-import Input from "../component/input/Input";
-import useToggleValue from "../component/common/useToggleValue";
-import TogglePassword from "../component/toggle/TogglePassword";
 import { useEffect } from "react";
-import { useAppDispatch } from "../redux/store";
-import { JWTType, User } from "../data/interface";
-import jwtDecode from "jwt-decode";
-import { update, updateToken } from "../redux/slices/userSlice";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import * as Yup from "yup";
+import AuthAPI from "../apis/authentication.api";
+import CartAPI from "../apis/cart.api";
 import UserApi from "../apis/user.api";
+import useToggleValue from "../component/common/useToggleValue";
+import Input from "../component/input/Input";
+import TogglePassword from "../component/toggle/TogglePassword";
+import { CartDetail, User } from "../data/interface";
+import { setCarts, update, updateToken } from "../redux/slices/userSlice";
+import { useAppDispatch } from "../redux/store";
 
-const schame = Yup.object({
+const schema = Yup.object({
     email: Yup.string()
-        .required("Please enter your emaill address!")
+        .required("Please enter your email address!")
         .matches(
             // eslint-disable-next-line no-control-regex
             /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
@@ -68,10 +68,26 @@ const LoginScreen = () => {
                             pauseOnHover: false,
                         });
                     });
+                await CartAPI.getCartByUser(values.email)
+                    .then((res) => {
+                        if (res.data) {
+                            const carts: CartDetail[] =
+                                res.data.cartDetails || [];
+                            dispatch(setCarts(carts));
+                        }
+                    })
+                    .catch((err) => {
+                        toast.error(err.message, {
+                            autoClose: 500,
+                            delay: 10,
+                            draggable: true,
+                            pauseOnHover: false,
+                        });
+                    });
             })
             .catch((err) => {
                 if (err.status === 404) {
-                    toast.error(`User does not esited!`, {
+                    toast.error(`User does not existed!`, {
                         autoClose: 500,
                         delay: 10,
                         draggable: true,
@@ -86,7 +102,7 @@ const LoginScreen = () => {
         control,
         formState: { errors },
     } = useForm({
-        resolver: yupResolver(schame),
+        resolver: yupResolver(schema),
         mode: "onSubmit",
     });
 
