@@ -1,14 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import OrderCard from "../component/card/OrderCard";
 import { useEffect, useState } from "react";
-import { RootState, useAppSelector } from "../redux/store";
+import { RootState, useAppDispatch, useAppSelector } from "../redux/store";
 import { CartDetail } from "../data/interface";
+import CartAPI from "../apis/cart.api";
+import { setCarts } from "../redux/slices/userSlice";
+import { toast } from "react-toastify";
 
 const ShopCart = () => {
-    const { userInfo, carts } = useAppSelector(
-        (state: RootState) => state.user,
-    );
+    const { userInfo } = useAppSelector((state: RootState) => state.user);
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const [carts, setCartsShop] = useState<CartDetail[]>([]);
     useEffect(() => {
         if (userInfo.email === "") {
             navigate("/login");
@@ -20,6 +23,53 @@ const ShopCart = () => {
             return cart.product.price;
         }),
     );
+    const getCartUser = async () => {
+        await CartAPI.getCartByUser(userInfo.email)
+            .then((res) => {
+                if (res.data) {
+                    const carts: CartDetail[] = res.data.cartDetails || [];
+                    setCartsShop(carts);
+                    dispatch(setCarts(carts));
+                }
+            })
+            .catch((err) => {
+                toast.error(err.message, {
+                    autoClose: 50000,
+                    delay: 10,
+                    draggable: true,
+                    pauseOnHover: false,
+                });
+            });
+    };
+    const handleUpdateCart = async (cartItem: CartDetail) => {
+        await CartAPI.updateCart(cartItem).then(async (res) => {
+            if (res.data) {
+                await getCartUser();
+                toast.success("Update Quantity Success!", {
+                    autoClose: 1000,
+                    delay: 10,
+                    draggable: true,
+                    pauseOnHover: false,
+                });
+            }
+        });
+    };
+    const handleRemoveFromCart = async (id: string) => {
+        await CartAPI.removeFromCart(userInfo.email, id)
+            .then(async (res) => {
+                if (res.data) {
+                    await getCartUser();
+                }
+            })
+            .catch((err) => {
+                toast.error(err.message, {
+                    autoClose: 1000,
+                    delay: 10,
+                    draggable: true,
+                    pauseOnHover: false,
+                });
+            });
+    };
     const handleTotalPrice = (price: number, index: number) => {
         setProductPrices((prevPrices) => {
             const newPrices = [...prevPrices];
@@ -27,6 +77,9 @@ const ShopCart = () => {
             return newPrices;
         });
     };
+    useEffect(() => {
+        getCartUser();
+    }, []);
     return (
         <div className="font-[sans-serif] bg-gray-100 h-screen text-center">
             <div className="max-w-7xl mx-auto p-6">
@@ -38,12 +91,11 @@ const ShopCart = () => {
                         {carts.length > 0 ? (
                             carts.map((cartItem: CartDetail, index: number) => (
                                 <OrderCard
-                                    product={cartItem.product}
+                                    cartItem={cartItem}
                                     handleTotalPrice={handleTotalPrice}
-                                    initialQuantity={cartItem.quantity}
+                                    handleUpdateCart={handleUpdateCart}
                                     key={index}
                                     index={index}
-                                    price={cartItem.product.price}
                                     id={cartItem.id}
                                 />
                             ))

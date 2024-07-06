@@ -12,10 +12,10 @@ const CartAPI = {
         const url = `carts/${email}`;
         return AxiosClient.get(url);
     },
-    updateCart: (email: string, cart: Cart) => {
+    updateCart: (cart: CartDetail) => {
         // Update cart
-        const url = `cart/${email}/update`;
-        return AxiosClient.put(url, cart);
+        const url = `cart/update`;
+        return AxiosClient.post(url, cart);
     },
     addCartGuest: (cart: Cart) => {
         // Add cart guest

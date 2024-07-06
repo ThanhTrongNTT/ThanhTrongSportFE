@@ -8,92 +8,39 @@ import { toast } from "react-toastify";
 import { setCarts } from "../../redux/slices/userSlice";
 
 type OrderCardProps = {
-    product: Product;
+    cartItem: CartDetail;
     handleTotalPrice: (price: number, index: number) => void;
-    initialQuantity: number;
+    handleUpdateCart: (cartItem: CartDetail) => void;
     index: number;
-    price: number;
     id?: string;
 };
-const OrderCard = (props: OrderCardProps) => {
+const OrderCard = ({
+    cartItem,
+    handleTotalPrice,
+    handleUpdateCart,
+    index,
+    id,
+}: OrderCardProps) => {
     const { userInfo } = useAppSelector((state: RootState) => state.user);
-    const [quantity, setQuantity] = useState(props.initialQuantity || 1);
-    const dispatch = useAppDispatch();
+    const [quantity, setQuantity] = useState(cartItem.quantity || 1);
 
     useEffect(() => {
-        if (props.initialQuantity)
-            props.handleTotalPrice(
-                props.price * props.initialQuantity,
-                props.index,
-            );
+        if (cartItem.quantity)
+            handleTotalPrice(cartItem.product.price * cartItem.quantity, index);
     }, []);
 
-    const handleItemCartQuantity = async (
-        quantity: number,
-        handle: Function,
-    ) => {
-        await CartAPI.addToCart(userInfo.email, {
-            product: props.product,
-            quantity,
-        })
-            .then(async (res) => {
-                if (res.data) {
-                    await CartAPI.getCartByUser(userInfo.email)
-                        .then((res) => {
-                            if (res.data) {
-                                const carts: CartDetail[] =
-                                    res.data.cartDetails || [];
-                                dispatch(setCarts(carts));
-                                handle();
-                            }
-                        })
-                        .catch((err) => {
-                            toast.error(err.message, {
-                                autoClose: 500,
-                                delay: 10,
-                                draggable: true,
-                                pauseOnHover: false,
-                            });
-                        });
-                }
-            })
-            .catch((err) => {
-                toast.error(err.message, {
-                    autoClose: 500,
-                    delay: 10,
-                    draggable: true,
-                    pauseOnHover: false,
-                });
-                return;
-            });
-    };
+    const handleItemCartQuantity = async () => {};
 
     const handleRemoveFromCart = async () => {
-        if (props.id) {
-            await CartAPI.removeFromCart(userInfo.email, props.id)
+        if (id) {
+            await CartAPI.removeFromCart(userInfo.email, id)
                 .then(async (res) => {
                     if (res.data) {
-                        await CartAPI.getCartByUser(userInfo.email)
-                            .then((res) => {
-                                if (res.data) {
-                                    const carts: CartDetail[] =
-                                        res.data.cartDetails || [];
-                                    dispatch(setCarts(carts));
-                                }
-                            })
-                            .catch((err) => {
-                                toast.error(err.message, {
-                                    autoClose: 500,
-                                    delay: 10,
-                                    draggable: true,
-                                    pauseOnHover: false,
-                                });
-                            });
                     }
                 })
                 .catch((err) => {
                     toast.error(err.message, {
-                        autoClose: 500,
+                        autoClose: 1000,
                         delay: 10,
                         draggable: true,
                         pauseOnHover: false,
@@ -103,19 +50,25 @@ const OrderCard = (props: OrderCardProps) => {
     };
 
     const addProduct = () => {
-        handleItemCartQuantity(1, () => {
-            const newQuantity = quantity + 1;
-            setQuantity(newQuantity);
-            props.handleTotalPrice(props.price * newQuantity, props.index);
-        });
+        const newQuantity = quantity + 1;
+        setQuantity(newQuantity);
+        handleTotalPrice(cartItem.product.price * newQuantity, index);
+        cartItem = {
+            ...cartItem,
+            quantity: newQuantity,
+        };
+        handleUpdateCart(cartItem);
     };
     const minusProduct = () => {
         if (quantity === 1) return;
-        handleItemCartQuantity(-1, () => {
-            const newQuantity = quantity - 1;
-            setQuantity(newQuantity);
-            props.handleTotalPrice(props.price * newQuantity, props.index);
-        });
+        const newQuantity = quantity - 1;
+        setQuantity(newQuantity);
+        handleTotalPrice(cartItem.product.price * newQuantity, index);
+        cartItem = {
+            ...cartItem,
+            quantity: newQuantity,
+        };
+        handleUpdateCart(cartItem);
     };
 
     return (
@@ -124,16 +77,16 @@ const OrderCard = (props: OrderCardProps) => {
                 <div className="w-20 h-20 col-span-2">
                     <ImageCustom
                         src={
-                            props.product.images.length > 0
-                                ? props.product.images[0].url
+                            cartItem.product.images.length > 0
+                                ? cartItem.product.images[0].url
                                 : "https://readymadeui.com/images/product1.webp"
                         }
-                        alt={props.product.productName}
+                        alt={cartItem.product.productName}
                         rounded
                     />
                 </div>
                 <div className="col-span-5">
-                    <span className="mx-2">{props.product.productName}</span>
+                    <span className="mx-2">{cartItem.product.productName}</span>
                 </div>
                 <div className="flex gap-2 col-span-2">
                     <div onClick={minusProduct}>
@@ -148,10 +101,13 @@ const OrderCard = (props: OrderCardProps) => {
                 </div>
                 <div className="col-span-2">
                     <span>
-                        {(props.price * quantity).toLocaleString("en", {
-                            style: "currency",
-                            currency: "USD",
-                        })}
+                        {(cartItem.product.price * quantity).toLocaleString(
+                            "en",
+                            {
+                                style: "currency",
+                                currency: "USD",
+                            },
+                        )}
                     </span>
                 </div>
                 <div

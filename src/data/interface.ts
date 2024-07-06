@@ -1,20 +1,20 @@
 export interface User {
-    id: string;
+    id?: string;
     userName: string;
     email: string;
     password: string;
-    activeFlag: boolean;
-    removalFlag: boolean;
+    activeFlag?: boolean;
+    removalFlag?: boolean;
     userProfile: UserProfile;
 }
 
 export interface UserProfile {
-    id: string;
+    id?: string;
     firstName: string;
     lastName: string;
     avatar: MediaFile;
     birthDate: string;
-    removalFlag: boolean;
+    removalFlag?: boolean;
 }
 
 export interface MediaFile {
